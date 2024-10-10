@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Data;
+using System.Collections;
 
 namespace TextRPG_OOP_
 {
@@ -55,11 +56,15 @@ namespace TextRPG_OOP_
         public Player mainPlayer;
         public ItemManager itemManager;
         public QuestManager questManager;
-        public Map(ItemManager IM) //Constructor
+        public Map(ItemManager IM, QuestManager quest) //Constructor
         {
+            questManager = quest;
+            quest.SetMap(this);
             Initialization();
             //Sets item manager from call in GameManager
             itemManager = IM;
+
+            
         }
         /// <summary>
         /// Starts the map building process.
@@ -83,12 +88,10 @@ namespace TextRPG_OOP_
         /// </summary>
         /// <param name="player"></param>
         /// <param name="em"></param>
-        public void Start(Player player, EnemyManager em, QuestManager quest)
+        public void Start(Player player, EnemyManager em)
         {
             enemyManager = em;
             mainPlayer = player;
-            quest = questManager;
-            quest.SetMap(this);
             AddToCharacterList(mainPlayer);
             SetPlayerSpawn(mainPlayer);
             GetPlayerMaxPosition(mainPlayer);
@@ -606,6 +609,8 @@ namespace TextRPG_OOP_
             Console.WriteLine("Active Quest is: ");
         }
 
+        
+
         public void UpdateArmorUIInfo()
         {
             Console.SetCursorPosition(mapX + 1, 7);
@@ -645,7 +650,14 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(mapX + 1, 12);
             Console.Write(" Current market price: " + newUpgradeCost);
         }
-        
+        public void ShopMenu()
+        {
+            Console.SetCursorPosition(0, mapY + 2);
+            Console.Clear();
+            Console.WriteLine("hahahhaha");
+            Console.WriteLine("Yer in da shop");
+            mainPlayer.shop.OpenShop();
+        }
         /// <summary>
         /// Draws HUD under game map
         /// </summary>

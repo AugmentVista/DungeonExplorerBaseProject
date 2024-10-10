@@ -25,7 +25,9 @@ namespace TextRPG_OOP_
         public int damageUpgradesTaken = 0;
 
 
+        public void OpenShop() { player.shopping = true; } // disables movement while shopping
 
+        public void CloseShop() { player.shopping = false; }
         
         public void SetPlayer(Player player) 
         {
@@ -83,7 +85,10 @@ namespace TextRPG_OOP_
         }
         public void Update()
         {
-        
+            while (player.shopping)
+            {
+                Console.WriteLine("I broke the game loop");
+            }
         }
     }
 }

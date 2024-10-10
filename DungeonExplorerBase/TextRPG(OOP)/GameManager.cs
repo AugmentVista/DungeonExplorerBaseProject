@@ -31,7 +31,7 @@ namespace TextRPG_OOP_
             itemManager = new ItemManager();
             shop = new ShopManager();
             questManager = new QuestManager();
-            gameMap = new Map(itemManager);
+            gameMap = new Map(itemManager, questManager);
             enemyManager = new EnemyManager(gameMap, settings, shop);
             mainPlayer = new Player(gameMap,itemManager, settings, shop, questManager);
         } 
@@ -42,7 +42,7 @@ namespace TextRPG_OOP_
         {
             Debug.WriteLine("Setting up starting map");
             itemManager.Start(gameMap);
-            gameMap.Start(mainPlayer, enemyManager, questManager);
+            gameMap.Start(mainPlayer, enemyManager);
             mainPlayer.Start();
             shop.Start();
             gameMap.Draw();

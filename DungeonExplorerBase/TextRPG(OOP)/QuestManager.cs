@@ -13,22 +13,26 @@ namespace TextRPG_OOP_
 
         public List<string> questsOrder;
 
+        public string firstQuestDetails;
+        public string secondQuestDetails;
+
+        public void Start()
+        {
+            firstQuestDetails = " Earn your first dollar ";
+            secondQuestDetails = "";
+        }
         public void UpdateActiveQuest()
         {
-            if (questsOrder != null || questsOrder.Count > 0)
-            {
-
-            }
-            else
-            { 
+             
                 FirstQuest();
-            }
+            
         }
 
         public void SetPlayer(Player player)
         { 
             this.player = player;
         }
+
         public void SetMap(Map map)
         {
             this.map = map;

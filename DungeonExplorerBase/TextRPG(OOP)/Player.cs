@@ -19,6 +19,7 @@ namespace TextRPG_OOP_
         public ConsoleKeyInfo playerInput;
         public bool gameIsOver;
         public bool gameWon;
+        public bool shopping;
         public string enemyHitName;
         public int enemyHitHealth;
         public int enemyHitArmor;
@@ -35,7 +36,7 @@ namespace TextRPG_OOP_
             gameIsOver = false;
             gameWon = false;
             StartingDamage = settings.PlayerBaseDamage; // Sets player starting damage
-            playerDamage = StartingDamage;
+            playerDamage = StartingDamage + playerDamageUps;
             PlayerMaxHP = settings.playerMaxHP; // Sets stating health
             healthSystem.SetHealth(PlayerMaxHP);// hands starting value to health system
             name = "Player"; // Testing for passing string.
@@ -60,7 +61,6 @@ namespace TextRPG_OOP_
         public void Update()
         {
             GetPlayerInput(gameMap);
-            CheckPlayerWallet();
         }
         /// <summary>
         /// used to keep player in map
@@ -85,37 +85,75 @@ namespace TextRPG_OOP_
         {
             if (itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
             {
-                itemManager.items[collisionMap.itemIndex].isActive = false;
-                itemManager.items[collisionMap.itemIndex].position.x = 0;
-                itemManager.items[collisionMap.itemIndex].position.y = 0;
-                gameMap.UpdateHealthUIInfo();
-                healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                GoShopping();
+                if (shopping)
+                {
+                    return;
+                }
+                else if (!shopping) 
+                {
+                    itemManager.items[collisionMap.itemIndex].isActive = false;
+                    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                    gameMap.UpdateHealthUIInfo();
+                    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                }
             }
             if (itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
             {
-                itemManager.items[collisionMap.itemIndex].isActive = false;
-                itemManager.items[collisionMap.itemIndex].position.x = 0;
-                itemManager.items[collisionMap.itemIndex].position.y = 0;
-                gameMap.UpdateArmorUIInfo();
-                healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                GoShopping();
+                Debug.WriteLine(shopping);
+                if (shopping)
+                {
+                    return;
+                }
+                else if (!shopping)
+                {
+                    itemManager.items[collisionMap.itemIndex].isActive = false;
+                    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                    gameMap.UpdateArmorUIInfo();
+                    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                }
             }
             if (itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
             {
-                itemManager.items[collisionMap.itemIndex].isActive = false;
-                itemManager.items[collisionMap.itemIndex].position.x = 0;
-                itemManager.items[collisionMap.itemIndex].position.y = 0;
-                playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                gameMap.UpdateDamageUIInfo();
-                playerDamage = playerDamageUps + 1;
+                GoShopping();
+                if (shopping)
+                {
+                    return;
+                }
+                else if (!shopping)
+                { 
+                    itemManager.items[collisionMap.itemIndex].isActive = false;
+                    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                    gameMap.UpdateDamageUIInfo();
+                    playerDamageUps++;
+                }
             }
         }
-
 
         public void SetPlayerPosition(int x, int y)
         {
             position.x = x;
             position.y = y;
         }
+
+        public void GoShopping()
+        {
+            gameMap.ShopMenu();
+            Debug.WriteLine("Am I shopping? " + shopping);
+        }
+
+        public void ExitShop()
+        { 
+        
+        }
+
+
+
         /// <summary>
         /// Input method, needs map to check for collision
         /// </summary>
@@ -124,16 +162,15 @@ namespace TextRPG_OOP_
         {
             int moveX;
             int moveY;
-            bool playerMoved;
-            playerMoved = false;
             while (Console.KeyAvailable) 
             { 
                 Console.ReadKey(true); 
             }
             playerInput = Console.ReadKey(true);
 
-            if(playerMoved == false)
+            //if(playerMoved == false)
             {
+                if (shopping) { return; }
                 if(playerInput.Key == ConsoleKey.W || playerInput.Key == ConsoleKey.UpArrow)
                 {
                     //Moves player up
@@ -195,7 +232,6 @@ namespace TextRPG_OOP_
                     }
                     else
                     {
-                        playerMoved = true;
                         position.y = moveY;
                         if(position.y <= 0)
                         {
@@ -262,7 +298,6 @@ namespace TextRPG_OOP_
                     }
                     else
                     {
-                        playerMoved = true;
                         position.y = moveY;
                         if(position.y >= position.maxY)
                         {
@@ -329,7 +364,6 @@ namespace TextRPG_OOP_
                     }
                     else
                     {
-                        playerMoved = true;
                         position.x = moveX;
                         if(position.x <= 0)
                         {
@@ -339,7 +373,6 @@ namespace TextRPG_OOP_
                 }
                 if(playerInput.Key == ConsoleKey.D || playerInput.Key == ConsoleKey.RightArrow)
                 {
-                    //Moves player right
                     moveX = (position.x + 1);
                     if(moveX >= position.maxX)
                     {
@@ -396,7 +429,6 @@ namespace TextRPG_OOP_
                     }
                     else
                     {
-                        playerMoved = true;
                         position.x = moveX;
                         if(position.x >= position.maxX)
                         {
