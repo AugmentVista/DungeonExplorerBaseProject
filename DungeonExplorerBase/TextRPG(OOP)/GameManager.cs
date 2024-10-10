@@ -51,13 +51,13 @@ namespace TextRPG_OOP_
         private void EndGame()
         {
             string FormatString = "You had {0} coins, {1} armor, and {2} HP remaining!";
-            Debug.WriteLine("EndingGame");
+            Debug.WriteLine("Ending Game");
             if(mainPlayer.gameIsOver && mainPlayer.gameWon == true)
             {
                 Debug.WriteLine("Player won");
                 Thread.Sleep(2000);
                 Console.Clear();
-                Console.WriteLine("You Won!");
+                Console.WriteLine("You Won!, I didn't think you'd do it, well done ");
                 Console.WriteLine();
                 Console.WriteLine(string.Format(FormatString,mainPlayer.playerCoins,mainPlayer.healthSystem.armor,mainPlayer.healthSystem.health));
                 Console.WriteLine();
@@ -70,7 +70,7 @@ namespace TextRPG_OOP_
                 Debug.WriteLine("Player lost");
                 Thread.Sleep(2000); 
                 Console.Clear();
-                Console.WriteLine("You have lost. Restarting game!");
+                Console.WriteLine("You have lost, that's okay. Try again?");
                 Thread.Sleep(3000);
                 PlayGame();
             }
@@ -123,24 +123,26 @@ namespace TextRPG_OOP_
         /// </summary>
         void Intro()
         {
+            Console.SetWindowSize(90, 30);
             Debug.WriteLine("Into!");
             Console.WriteLine("Welcome to Dungeon Explorer!"); // placeholderTitle
             Console.WriteLine();
-            Console.Write("Escape the dungeon and climb to the 2nd floor to find the chalace. ");
+            Console.Write("Escape the dungeon and climb to the 2nd floor to find the chalice. ");
             gameMap.DrawFinalLoot();
             Console.WriteLine();
             Console.Write("Collect coins ");
             gameMap.DrawCoin();
-            Console.Write(" to increase your attack power.");
+            Console.Write(" to purchase items, ain't nothing free in this world");
             Console.WriteLine();
-            Console.Write("Collect hearts to heal.");
+            Console.Write("Purchase ");
             gameMap.DrawHealthPickup();
-            Console.WriteLine();
-            Console.Write("Collect peices of armor "); 
+            Console.WriteLine(" to recover Health");
+            Console.Write("Purchase "); 
             gameMap.DrawArmor();
-            Console.Write(" to up your defence.");
+            Console.Write(" to protect your squishy bones from weak attacks");
             Console.WriteLine();
-            Console.Write("Avoid or fight the monsters!");
+            Console.Write("Commit assault against the creatures of this dungeon for cash");
+            Console.WriteLine("Use that cash to improve yourself");
             Console.WriteLine();
             Console.WriteLine("Press any key to get started!");
             Console.ReadKey(true);
