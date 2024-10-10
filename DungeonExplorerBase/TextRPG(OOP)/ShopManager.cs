@@ -60,20 +60,25 @@ namespace TextRPG_OOP_
         }
 
 
-        public void UpdateUpgradeCosts(string upgradeType, int stock)
+        public void UpdateUpgradeCosts(string upgradeType, int stock) // stock from 12 down to 10 becomes:
         {
+            // as stock goes down price should go up
             if (upgradeType == "Armor")
             {
                 armourUpgradesTaken++;
-                armourUpgradeCost = (stock - armourUpgradesTaken) * upgradeCostMultiplier;
+                armourUpgradeCost = (stock + armourUpgradesTaken * upgradeCostMultiplier);
+                // first upgrade is free as X * 0 = 0 Second upgrade cost = stock which is now stock -2
+                // third upgrade is equal to stock -4 * 2 and so on.
             }
             if (upgradeType == "Health")
             { 
                 healthUpgradesTaken++;
+                healthUpgradeCost = (stock + healthUpgradesTaken * upgradeCostMultiplier);
             }
             if (upgradeType == "Damage")
             { 
                 damageUpgradesTaken++;
+                damageUpgradeCost = (stock + damageUpgradesTaken * upgradeCostMultiplier);
             }
         }
 

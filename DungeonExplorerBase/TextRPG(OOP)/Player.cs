@@ -141,12 +141,13 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamage = playerDamageUps + 1;
                         }
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
@@ -203,12 +204,13 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamage = playerDamageUps + 1;
                         }
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
@@ -265,12 +267,13 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamage = playerDamageUps + 1;
                         }
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
@@ -327,12 +330,13 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamage = playerDamageUps + 1;
                         }
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
@@ -381,43 +385,6 @@ namespace TextRPG_OOP_
         /// </summary>
         void CheckPlayerWallet() // change to call to ShopManager 
         {
-
-        
-            // Player should have their wallet (number of coins) display every update
-            // Player should earn coins by hitting enemies and lose coins for buying items
-            // items will do more but now cost coins
-
-
-
-
-            //if (playerCoins < 3)
-            //{
-            //    playerDamage = StartingDamage;
-            //    //healthSystem.armor = 0;
-            //}
-            //if(playerCoins >= 3 && playerCoins < 6)
-            //{
-            //    playerDamage = StartingDamage+2;
-            //    //healthSystem.armor = 1;
-            //}
-            //if(playerCoins >= 6 && playerCoins < 9)
-            //{
-            //    playerDamage = StartingDamage+3;
-            //    //healthSystem.armor = 2;
-            //}
-            //if(playerCoins >= 9 && playerCoins < 15)
-            //{
-            //    playerDamage = StartingDamage+5;
-            //    //healthSystem.armor = 3;
-            //}
-            //if(playerCoins >= 15 && playerCoins < 25)
-            //{
-            //    playerDamage = StartingDamage+7;
-            //}
-            //if(playerCoins >= 25)
-            //{
-            //    playerDamage = StartingDamage+15;
-            //}
         }
         /// <summary>
         /// Draws player to map.

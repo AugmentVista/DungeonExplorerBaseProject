@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 
 namespace TextRPG_OOP_
@@ -173,24 +172,24 @@ namespace TextRPG_OOP_
                     }
                     if(tile == '@' && levelChanged == false)
                     {
-                        itemManager.AddItemToList("Coin",x,y);
+                        itemManager.AddItemToList("Damage Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        damageUpgradeCount++;
+                        damageUpgradeCount += 1;
                     }
                     if(tile == '"' && levelChanged == false)
                     {
                         itemManager.AddItemToList("Health Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        healthUpgradeCount++;
+                        healthUpgradeCount += 1;
                     }
                     if(tile == '+' && levelChanged == false)
                     {
                         itemManager.AddItemToList("Armor Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        armourUpgradeCount++;
+                        armourUpgradeCount += 1;
                     }
                     DrawTile(tile);
                 }
@@ -577,7 +576,6 @@ namespace TextRPG_OOP_
         /// </summary>
         public void DrawEnemyLegend()
         {
-            //Draws legend for enemies.
             Console.SetCursorPosition(mapX + 1, 3);
             Console.Write(enemy2);
             Console.Write(" = Slime");
@@ -589,6 +587,16 @@ namespace TextRPG_OOP_
             Console.Write(" = Goblin Folk");
         }
 
+        public void DrawItemLegend()
+        {
+            UpdateArmorUIInfo();
+            UpdateHealthUIInfo();
+            UpdateDamageUIInfo();
+            Console.SetCursorPosition(mapX + 1, 13);
+            Console.Write(finalLoot);
+            Console.Write(" = Maguffin ");
+        }
+
         public void UpdateArmorUIInfo()
         {
             int armourDemand = itemCount + armourUpgradeCount;
@@ -597,7 +605,7 @@ namespace TextRPG_OOP_
             Console.Write(armorPickup);
             Console.Write(" = Armor Item Shop");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Armor", armourDemand);
+            mainPlayer.shop.UpdateUpgradeCosts(" Armor ", armourDemand);
 
             int newUpgradeCost = mainPlayer.shop.armourUpgradeCost;
 
@@ -608,13 +616,13 @@ namespace TextRPG_OOP_
 
         public void UpdateHealthUIInfo()
         {
-            int healthDemand = itemCount / healthUpgradeCount; // Example logic for health items
+            int healthDemand = itemCount + healthUpgradeCount; 
 
             Console.SetCursorPosition(mapX + 1, 9);
             Console.Write(healthPickup);
-            Console.Write("Health Item Shop");
+            Console.Write(" Health Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Health", healthDemand);
+            mainPlayer.shop.UpdateUpgradeCosts(" Health ", healthDemand);
             int healthMarketPrice = mainPlayer.shop.healthUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 10);
@@ -623,28 +631,19 @@ namespace TextRPG_OOP_
 
         public void UpdateDamageUIInfo()
         {
-            int damageDemand = itemCount / damageUpgradeCount; // Example logic for damage items
+            int damageDemand = itemCount + damageUpgradeCount; 
 
             Console.SetCursorPosition(mapX + 1, 11);
             Console.Write(damagePickup);
-            Console.Write("Damage Item Shop");
+            Console.Write(" Damage Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Damage", damageDemand);
+            mainPlayer.shop.UpdateUpgradeCosts(" Damage ", damageDemand);
             int damageMarketPrice = mainPlayer.shop.damageUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 12);
             Console.Write(" Current market price: " + damageMarketPrice);
         }
-
-        public void DrawItemLegend()
-        {
-            UpdateArmorUIInfo();
-            UpdateHealthUIInfo();
-            UpdateDamageUIInfo();
-            Console.SetCursorPosition(mapX + 1, 13);
-            Console.Write(finalLoot);
-            Console.Write(" = Maguffin");
-        }
+        
         /// <summary>
         /// Draws HUD under game map
         /// </summary>
@@ -654,7 +653,7 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(0,mapY + 1);
             Debug.WriteLine("Drawing HUD");
             string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
-            string FormatString = "HP: {0}  Damage: {1}  Coins: {2}  Armor: {3}    ";
+            string FormatString = "HP: {0}  Damage: {1}  DMGups: {2}  Armor: {3}    ";
             Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, mainPlayer.playerDamage, mainPlayer.playerDamageUps, mainPlayer.healthSystem.armor));
             if(mainPlayer.enemyHitName == "")
             {

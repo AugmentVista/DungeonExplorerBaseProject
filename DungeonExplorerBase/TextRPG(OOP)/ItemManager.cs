@@ -86,7 +86,7 @@ namespace TextRPG_OOP_
                 if(items[i].position.x == player.position.x && items[i].position.y == player.position.y)
                 {
                     // call to shopManager to check if player can afford item
-                    if (items[i].itemType == "Damage Upgrade") 
+                    if (items[i].itemType == "Damage Pickup") 
                     {
                         player.playerDamageUps += items[i].gainAmount;
                         items[i].isActive = false;    

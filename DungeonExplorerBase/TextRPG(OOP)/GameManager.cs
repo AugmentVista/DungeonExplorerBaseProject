@@ -135,7 +135,7 @@ namespace TextRPG_OOP_
             Console.Write("Beat up the inhabitants of this dungeon and climb to the 3rd floor to yoink this thing ");
             gameMap.DrawFinalLoot();
             Console.WriteLine();
-            Console.Write(" Purchase ");
+            Console.Write("Purchase ");
             gameMap.DrawDamageUpgrade();
             Console.Write(" to upgrade your damage");
             Console.WriteLine();
