@@ -89,18 +89,21 @@ namespace TextRPG_OOP_
                     if (items[i].itemType == "Damage Pickup") 
                     {
                         player.playerDamageUps += items[i].gainAmount;
+                        gameMap.damageUpgradeCount++;
                         items[i].isActive = false;    
                     }
                     // call to shopManager to check if player can afford item
                     if (items[i].itemType == "Health Pickup" && player.healthSystem.health != player.PlayerMaxHP)
                     {
                         player.healthSystem.health += items[i].gainAmount;
+                        gameMap.healthUpgradeCount++;
                         items[i].isActive = false;  
                     }
                     // call to shopManager to check if player can afford item
                     if (items[i].itemType == "Armor Pickup") 
                     {
                         player.healthSystem.armor += items[i].gainAmount;
+                        gameMap.armourUpgradeCount++;
                         items[i].isActive = false;  
                     }
                     // else write "Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!"

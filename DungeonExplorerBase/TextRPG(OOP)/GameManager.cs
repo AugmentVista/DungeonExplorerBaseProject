@@ -19,6 +19,7 @@ namespace TextRPG_OOP_
         public ItemManager itemManager;
         public Settings settings;
         public ShopManager shop;
+        public QuestManager questManager;
         /// <summary>
         /// Gets all references so game is ready to start up
         /// </summary>
@@ -29,9 +30,10 @@ namespace TextRPG_OOP_
             settings = new Settings();
             itemManager = new ItemManager();
             shop = new ShopManager();
+            questManager = new QuestManager();
             gameMap = new Map(itemManager);
             enemyManager = new EnemyManager(gameMap, settings, shop);
-            mainPlayer = new Player(gameMap,itemManager, settings, shop);
+            mainPlayer = new Player(gameMap,itemManager, settings, shop, questManager);
         } 
         /// <summary>
         /// Calls Start methods for all things needed in the game.
@@ -40,13 +42,14 @@ namespace TextRPG_OOP_
         {
             Debug.WriteLine("Setting up starting map");
             itemManager.Start(gameMap);
-            gameMap.Start(mainPlayer, enemyManager);
+            gameMap.Start(mainPlayer, enemyManager, questManager);
             mainPlayer.Start();
             shop.Start();
             gameMap.Draw();
             itemManager.Draw();
             mainPlayer.Draw();
             enemyManager.Draw();
+            questManager.UpdateActiveQuest();
         }
         /// <summary>
         /// Handels game ending, for both win and loss.
@@ -88,7 +91,6 @@ namespace TextRPG_OOP_
             {
                 Console.CursorVisible = false;
                 CheckPlayerCondition();
-                shop.Update();
                 gameMap.Update();
                 mainPlayer.Update();
                 gameMap.Draw();
@@ -97,7 +99,7 @@ namespace TextRPG_OOP_
                 itemManager.Draw();
                 enemyManager.Update();
                 enemyManager.Draw();
-                //shop.Update();
+                shop.Update();
             }
             EndGame();
         }
@@ -117,7 +119,6 @@ namespace TextRPG_OOP_
         /// </summary>
         private void CheckPlayerCondition()
         {
-            Debug.WriteLine("Checking player");
             if(mainPlayer.healthSystem.IsAlive == false)
             {
                 mainPlayer.gameIsOver = true;

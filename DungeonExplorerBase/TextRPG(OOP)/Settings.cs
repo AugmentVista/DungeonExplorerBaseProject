@@ -18,7 +18,7 @@ namespace TextRPG_OOP_
         public int ConstructBaseDamage = 0;
         public int GoblinFolkBaseHP = 3;
         public int GoblinFolkBaseDamage = 0;
-        public int playerMaxHP = 20;
+        public int playerMaxHP = 10;
         public int PlayerBaseDamage = 1;
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using System.Data;
 
 namespace TextRPG_OOP_
 {
@@ -31,7 +32,7 @@ namespace TextRPG_OOP_
         public char healthPickup = ((char)3); // ♥
         public char armorPickup = ((char)21); // §
         static char enemy1 = ((char)4); // ? = Construct
-        static char enemy2 = ((char)6); // ! = Slime
+        static char enemy2 = ((char)6); // ! = Plasmoid
         static char enemy3 = ((char)5); // & = GoblinFolk
 
         public static int mapX;
@@ -53,6 +54,7 @@ namespace TextRPG_OOP_
         public EnemyManager enemyManager;
         public Player mainPlayer;
         public ItemManager itemManager;
+        public QuestManager questManager;
         public Map(ItemManager IM) //Constructor
         {
             Initialization();
@@ -81,13 +83,16 @@ namespace TextRPG_OOP_
         /// </summary>
         /// <param name="player"></param>
         /// <param name="em"></param>
-        public void Start(Player player, EnemyManager em)
+        public void Start(Player player, EnemyManager em, QuestManager quest)
         {
             enemyManager = em;
             mainPlayer = player;
+            quest = questManager;
+            quest.SetMap(this);
             AddToCharacterList(mainPlayer);
             SetPlayerSpawn(mainPlayer);
             GetPlayerMaxPosition(mainPlayer);
+            DrawItemLegend();
         }
         /// <summary>
         /// Creates map based on active floor.
@@ -109,6 +114,7 @@ namespace TextRPG_OOP_
         {
             index = 0;
             itemIndex = 0;
+            DrawEnemyLegend();
         }
         /// <summary>
         /// Calls function to draw map/Hud/Legend
@@ -118,7 +124,6 @@ namespace TextRPG_OOP_
             DrawMap();
             DrawHUD();
             DrawEnemyLegend();
-            DrawItemLegend();
         }
         /// <summary>
         /// Draws the map of the current level
@@ -457,7 +462,7 @@ namespace TextRPG_OOP_
         /// <param name="y"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public bool CretureInTarget(int y, int x)
+        public bool CreatureInTarget(int y, int x)
         {
             //Used to check if a creture is in target location. 
             bool IsTarget = false;
@@ -578,7 +583,7 @@ namespace TextRPG_OOP_
         {
             Console.SetCursorPosition(mapX + 1, 3);
             Console.Write(enemy2);
-            Console.Write(" = Slime");
+            Console.Write(" = Plasmoid");
             Console.SetCursorPosition(mapX + 1, 4);
             Console.Write(enemy1);
             Console.Write(" = Construct");
@@ -592,56 +597,53 @@ namespace TextRPG_OOP_
             UpdateArmorUIInfo();
             UpdateHealthUIInfo();
             UpdateDamageUIInfo();
+        }
+
+
+        public void UpdateQuestUIInfo()
+        {
             Console.SetCursorPosition(mapX + 1, 13);
-            Console.Write(finalLoot);
-            Console.Write(" = Maguffin ");
+            Console.WriteLine("Active Quest is: ");
         }
 
         public void UpdateArmorUIInfo()
         {
-            int armourDemand = itemCount + armourUpgradeCount;
-
             Console.SetCursorPosition(mapX + 1, 7);
             Console.Write(armorPickup);
             Console.Write(" = Armor Item Shop");
 
-            mainPlayer.shop.UpdateUpgradeCosts(" Armor ", armourDemand);
+            mainPlayer.shop.UpdateUpgradeCosts("Armor");
 
             int newUpgradeCost = mainPlayer.shop.armourUpgradeCost;
 
-            // Display the current market price
             Console.SetCursorPosition(mapX + 1, 8);
             Console.Write(" Current market price: " + newUpgradeCost);
         }
 
         public void UpdateHealthUIInfo()
         {
-            int healthDemand = itemCount + healthUpgradeCount; 
-
             Console.SetCursorPosition(mapX + 1, 9);
             Console.Write(healthPickup);
             Console.Write(" Health Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts(" Health ", healthDemand);
-            int healthMarketPrice = mainPlayer.shop.healthUpgradeCost;
+            mainPlayer.shop.UpdateUpgradeCosts("Health");
+            int newUpgradeCost = mainPlayer.shop.healthUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 10);
-            Console.Write(" Current market price: " + healthMarketPrice);
+            Console.Write(" Current market price: " + newUpgradeCost);
         }
 
         public void UpdateDamageUIInfo()
         {
-            int damageDemand = itemCount + damageUpgradeCount; 
-
             Console.SetCursorPosition(mapX + 1, 11);
             Console.Write(damagePickup);
             Console.Write(" Damage Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts(" Damage ", damageDemand);
-            int damageMarketPrice = mainPlayer.shop.damageUpgradeCost;
+            mainPlayer.shop.UpdateUpgradeCosts("Damage");
+            int newUpgradeCost = mainPlayer.shop.damageUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 12);
-            Console.Write(" Current market price: " + damageMarketPrice);
+            Console.Write(" Current market price: " + newUpgradeCost);
         }
         
         /// <summary>
@@ -651,10 +653,10 @@ namespace TextRPG_OOP_
         {
             //Draws HUD.
             Console.SetCursorPosition(0,mapY + 1);
-            Debug.WriteLine("Drawing HUD");
+
             string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
-            string FormatString = "HP: {0}  Damage: {1}  DMGups: {2}  Armor: {3}    ";
-            Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, mainPlayer.playerDamage, mainPlayer.playerDamageUps, mainPlayer.healthSystem.armor));
+            string FormatString = "HP: {0}  Damage: {1}  Armor: {2} Money: {3}   ";
+            Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, mainPlayer.playerDamage, mainPlayer.healthSystem.armor, mainPlayer.shop.playerCoins));
             if(mainPlayer.enemyHitName == "")
             {
                 Console.WriteLine();

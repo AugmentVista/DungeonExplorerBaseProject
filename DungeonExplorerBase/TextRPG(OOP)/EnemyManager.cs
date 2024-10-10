@@ -86,7 +86,6 @@ namespace TextRPG_OOP_
         {
             for(int i = 0; i < enemiesList.Count(); i++)
             {
-                Debug.WriteLine("Moving " + enemiesList[i].name);
                 enemiesList[i].MoveEnemy(gameMap);
             }
         }

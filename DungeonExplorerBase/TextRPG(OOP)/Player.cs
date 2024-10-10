@@ -27,22 +27,25 @@ namespace TextRPG_OOP_
         public char avatar;
         public ItemManager itemManager;
         public ShopManager shop;
-        public Player(Map map, ItemManager IM, Settings settings, ShopManager shop)
+        public QuestManager quest;
+        public Player(Map map, ItemManager IM, Settings settings, ShopManager shop, QuestManager quest)
         {
             avatar = ((char)2); // Sets player to smiley face.
             healthSystem.IsAlive = true; // initilizes player as alive.
             gameIsOver = false;
             gameWon = false;
-            this.shop = shop;
             StartingDamage = settings.PlayerBaseDamage; // Sets player starting damage
-            playerDamage = StartingDamage; 
+            playerDamage = StartingDamage;
             PlayerMaxHP = settings.playerMaxHP; // Sets stating health
             healthSystem.SetHealth(PlayerMaxHP);// hands starting value to health system
             name = "Player"; // Testing for passing string.
             enemyHitName = ""; // clears enemy hit for starting
             gameMap = map; // hands map to player
             itemManager = IM; // hands item manager to player
+            this.shop = shop;
             shop.SetPlayer(this);
+            this.quest = quest;
+            quest.SetPlayer(this);
         }
         /// <summary>
         /// Used at start to prevent player from leaving screen.
@@ -77,6 +80,37 @@ namespace TextRPG_OOP_
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+
+        public void ItemCheck(Map collisionMap)
+        {
+            if (itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
+            {
+                itemManager.items[collisionMap.itemIndex].isActive = false;
+                itemManager.items[collisionMap.itemIndex].position.x = 0;
+                itemManager.items[collisionMap.itemIndex].position.y = 0;
+                gameMap.UpdateHealthUIInfo();
+                healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+            }
+            if (itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
+            {
+                itemManager.items[collisionMap.itemIndex].isActive = false;
+                itemManager.items[collisionMap.itemIndex].position.x = 0;
+                itemManager.items[collisionMap.itemIndex].position.y = 0;
+                gameMap.UpdateArmorUIInfo();
+                healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+            }
+            if (itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
+            {
+                itemManager.items[collisionMap.itemIndex].isActive = false;
+                itemManager.items[collisionMap.itemIndex].position.x = 0;
+                itemManager.items[collisionMap.itemIndex].position.y = 0;
+                playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                gameMap.UpdateDamageUIInfo();
+                playerDamage = playerDamageUps + 1;
+            }
+        }
+
+
         public void SetPlayerPosition(int x, int y)
         {
             position.x = x;
@@ -97,7 +131,7 @@ namespace TextRPG_OOP_
                 Console.ReadKey(true); 
             }
             playerInput = Console.ReadKey(true);
-            //Console.WriteLine(playerInput.Key); //debug to see what key is pressed
+
             if(playerMoved == false)
             {
                 if(playerInput.Key == ConsoleKey.W || playerInput.Key == ConsoleKey.UpArrow)
@@ -108,17 +142,16 @@ namespace TextRPG_OOP_
                     {
                         moveY = 0; //Locks top of screen
                     }
-                    if(collisionMap.CretureInTarget(moveY, position.x) && collisionMap.index != 0) // Player should always be 0, need to prevent self harm.
+                    if(collisionMap.CreatureInTarget(moveY, position.x) && collisionMap.index != 0) // Player should always be 0, need to prevent self harm.
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
-
                         if (collisionMap.characters[collisionMap.index].healthSystem.health <= 0)
                         {
+                            Debug.WriteLine(enemyHitName);
                             shop.ClaimBountyOn(enemyHitName);
-                                
                         }
                         moveY = position.y;
                         position.y = moveY;
@@ -127,32 +160,35 @@ namespace TextRPG_OOP_
                     }
                     if(collisionMap.ItemInTarget(moveY, position.x) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                            playerDamage = playerDamageUps + 1;
-                        }
+                        ItemCheck(collisionMap);
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    gameMap.UpdateHealthUIInfo();
+                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    gameMap.UpdateArmorUIInfo();
+                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //    gameMap.UpdateDamageUIInfo();
+                        //    playerDamage = playerDamageUps + 1;
+                        //}
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
                     {
-                        Debug.WriteLine("HitWall");
                         moveY = position.y;
                         position.y = moveY;
                         return;
@@ -175,14 +211,18 @@ namespace TextRPG_OOP_
                     {
                         moveY = position.maxY; //Locks top of screen
                     }
-                    if(collisionMap.CretureInTarget(moveY, position.x) && collisionMap.index != 0)
+                    if(collisionMap.CreatureInTarget(moveY, position.x) && collisionMap.index != 0)
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
-                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
-                        // check if enemy is dead, if so pass dead condition to Shop
+                        if (collisionMap.characters[collisionMap.index].healthSystem.health <= 0)
+                        {
+                            Debug.WriteLine(enemyHitName);
+                            shop.ClaimBountyOn(enemyHitName);
+
+                        }
                         moveY = position.y;
                         position.y = moveY;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -190,32 +230,32 @@ namespace TextRPG_OOP_
                     }
                     if(collisionMap.ItemInTarget(moveY, position.x) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                            playerDamage = playerDamageUps + 1;
-                        }
+                        ItemCheck(collisionMap);
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //    playerDamage = playerDamageUps + 1;
+                        //}
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
                     {
-                        Debug.WriteLine("HitWall");
                         moveY = position.y;
                         position.y = moveY;
                         return;
@@ -238,14 +278,18 @@ namespace TextRPG_OOP_
                     {
                         moveX = 0; //Locks top of screen
                     }
-                    if(collisionMap.CretureInTarget(position.y, moveX) && collisionMap.index != 0)
+                    if(collisionMap.CreatureInTarget(position.y, moveX) && collisionMap.index != 0)
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
-                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
-                        // check if enemy is dead, if so pass dead condition to Shop
+                        if (collisionMap.characters[collisionMap.index].healthSystem.health <= 0)
+                        {
+                            Debug.WriteLine(enemyHitName);
+                            shop.ClaimBountyOn(enemyHitName);
+
+                        }
                         moveX = position.x;
                         position.x = moveX;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -253,32 +297,32 @@ namespace TextRPG_OOP_
                     }
                     if(collisionMap.ItemInTarget(position.y, moveX) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                            playerDamage = playerDamageUps + 1;
-                        }
+                        ItemCheck(collisionMap);
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //    playerDamage = playerDamageUps + 1;
+                        //}
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
                     {
-                        Debug.WriteLine("HitWall");
                         moveX = position.x;
                         position.x = moveX;
                         return;
@@ -301,14 +345,18 @@ namespace TextRPG_OOP_
                     {
                         moveX = position.maxX; //Locks top of screen
                     }
-                    if(collisionMap.CretureInTarget(position.y, moveX) && collisionMap.index != 0)
+                    if(collisionMap.CreatureInTarget(position.y, moveX) && collisionMap.index != 0)
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
-                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
-                        // check if enemy is dead, if so pass dead condition to Shop
+                        if (collisionMap.characters[collisionMap.index].healthSystem.health <= 0)
+                        {
+                            Debug.WriteLine(enemyHitName);
+                            shop.ClaimBountyOn(enemyHitName);
+
+                        }
                         moveX = position.x;
                         position.x = moveX;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -316,32 +364,32 @@ namespace TextRPG_OOP_
                     }
                     if(collisionMap.ItemInTarget(position.y, moveX) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        {
-                            itemManager.items[collisionMap.itemIndex].isActive = false;
-                            itemManager.items[collisionMap.itemIndex].position.x = 0;
-                            itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                            playerDamage = playerDamageUps + 1;
-                        }
+                        ItemCheck(collisionMap);
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //}
+                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
+                        //{
+                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
+                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        //    playerDamage = playerDamageUps + 1;
+                        //}
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
                     {
-                        Debug.WriteLine("HitWall");
                         moveX = position.x;
                         position.x = moveX;
                         return;
