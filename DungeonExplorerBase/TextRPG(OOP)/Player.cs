@@ -14,7 +14,7 @@ namespace TextRPG_OOP_
     internal class Player : Character
     {
         public int playerDamage;
-        public int playerCoins;
+        public int playerDamageUps;
         public int PlayerMaxHP;
         public ConsoleKeyInfo playerInput;
         public bool gameIsOver;
@@ -29,20 +29,19 @@ namespace TextRPG_OOP_
         public ShopManager shop;
         public Player(Map map, ItemManager IM, Settings settings, ShopManager shop)
         {
-            avatar = ((char)2); //Sets player to smiley face.
+            avatar = ((char)2); // Sets player to smiley face.
             healthSystem.IsAlive = true; // initilizes player as alive.
             gameIsOver = false;
             gameWon = false;
             this.shop = shop;
-            playerCoins = settings.playerStartingCoins; //starts player with 0 coins.
-            StartingDamage = settings.PlayerBaseDamage; //Sets player starting damage
+            StartingDamage = settings.PlayerBaseDamage; // Sets player starting damage
             playerDamage = StartingDamage; 
-            PlayerMaxHP = settings.playerMaxHP; //Sets stating health
-            healthSystem.SetHealth(PlayerMaxHP);//hands starting value to health system
+            PlayerMaxHP = settings.playerMaxHP; // Sets stating health
+            healthSystem.SetHealth(PlayerMaxHP);// hands starting value to health system
             name = "Player"; // Testing for passing string.
-            enemyHitName = ""; //clears enemy hit for starting
-            gameMap = map; //hands map to player
-            itemManager = IM; //hands item manager to player
+            enemyHitName = ""; // clears enemy hit for starting
+            gameMap = map; // hands map to player
+            itemManager = IM; // hands item manager to player
             shop.SetPlayer(this);
         }
         /// <summary>
@@ -58,7 +57,7 @@ namespace TextRPG_OOP_
         public void Update()
         {
             GetPlayerInput(gameMap);
-            UpPlayerStats();
+            CheckPlayerWallet();
         }
         /// <summary>
         /// used to keep player in map
@@ -89,8 +88,6 @@ namespace TextRPG_OOP_
         /// <param name="collisionMap"></param>
         public void GetPlayerInput(Map collisionMap)
         {
-            
-           
             int moveX;
             int moveY;
             bool playerMoved;
@@ -115,10 +112,14 @@ namespace TextRPG_OOP_
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
-                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
-                        // check if enemy is dead, if so pass dead condition to Shop
+
+                        if (collisionMap.characters[collisionMap.index].healthSystem.health <= 0)
+                        {
+                            shop.ClaimBountyOn(enemyHitName);
+                                
+                        }
                         moveY = position.y;
                         position.y = moveY;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -140,12 +141,12 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Coin")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerCoins += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
@@ -202,12 +203,12 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Coin")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerCoins += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
@@ -264,12 +265,12 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Coin")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerCoins += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
@@ -326,12 +327,12 @@ namespace TextRPG_OOP_
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
                             healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
-                        if(itemManager.items[collisionMap.itemIndex].itemType == "Coin")
+                        if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Upgrade")
                         {
                             itemManager.items[collisionMap.itemIndex].isActive = false;
                             itemManager.items[collisionMap.itemIndex].position.x = 0;
                             itemManager.items[collisionMap.itemIndex].position.y = 0;
-                            playerCoins += itemManager.items[collisionMap.itemIndex].gainAmount;
+                            playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
                         }
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
@@ -378,39 +379,45 @@ namespace TextRPG_OOP_
         /// <summary>
         /// Used to increase player stats based on collions.
         /// </summary>
-        void UpPlayerStats() // change to call to ShopManager 
+        void CheckPlayerWallet() // change to call to ShopManager 
+        {
+
+        
             // Player should have their wallet (number of coins) display every update
             // Player should earn coins by hitting enemies and lose coins for buying items
             // items will do more but now cost coins
-        {
-            if(playerCoins < 3)
-            {
-                playerDamage = StartingDamage;
-                //healthSystem.armor = 0;
-            }
-            if(playerCoins >= 3 && playerCoins < 6)
-            {
-                playerDamage = StartingDamage+2;
-                //healthSystem.armor = 1;
-            }
-            if(playerCoins >= 6 && playerCoins < 9)
-            {
-                playerDamage = StartingDamage+3;
-                //healthSystem.armor = 2;
-            }
-            if(playerCoins >= 9 && playerCoins < 15)
-            {
-                playerDamage = StartingDamage+5;
-                //healthSystem.armor = 3;
-            }
-            if(playerCoins >= 15 && playerCoins < 25)
-            {
-                playerDamage = StartingDamage+7;
-            }
-            if(playerCoins >= 25)
-            {
-                playerDamage = StartingDamage+15;
-            }
+
+
+
+
+            //if (playerCoins < 3)
+            //{
+            //    playerDamage = StartingDamage;
+            //    //healthSystem.armor = 0;
+            //}
+            //if(playerCoins >= 3 && playerCoins < 6)
+            //{
+            //    playerDamage = StartingDamage+2;
+            //    //healthSystem.armor = 1;
+            //}
+            //if(playerCoins >= 6 && playerCoins < 9)
+            //{
+            //    playerDamage = StartingDamage+3;
+            //    //healthSystem.armor = 2;
+            //}
+            //if(playerCoins >= 9 && playerCoins < 15)
+            //{
+            //    playerDamage = StartingDamage+5;
+            //    //healthSystem.armor = 3;
+            //}
+            //if(playerCoins >= 15 && playerCoins < 25)
+            //{
+            //    playerDamage = StartingDamage+7;
+            //}
+            //if(playerCoins >= 25)
+            //{
+            //    playerDamage = StartingDamage+15;
+            //}
         }
         /// <summary>
         /// Draws player to map.

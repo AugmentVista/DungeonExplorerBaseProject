@@ -29,7 +29,7 @@ namespace TextRPG_OOP_
                 color = ConsoleColor.Red;
                 gainAmount = map.levelNumber;
             }
-            if(itemType == "Coin")
+            if(itemType == "DamageUpgrade")
             {
                 item = ((char)164);
                 color = ConsoleColor.DarkYellow;

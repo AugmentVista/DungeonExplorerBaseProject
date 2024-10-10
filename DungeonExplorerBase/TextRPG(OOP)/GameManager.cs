@@ -42,18 +42,18 @@ namespace TextRPG_OOP_
             itemManager.Start(gameMap);
             gameMap.Start(mainPlayer, enemyManager);
             mainPlayer.Start();
+            shop.Start();
             gameMap.Draw();
             itemManager.Draw();
             mainPlayer.Draw();
             enemyManager.Draw();
-            shop.Start();
         }
         /// <summary>
         /// Handels game ending, for both win and loss.
         /// </summary>
         private void EndGame()
         {
-            string FormatString = "You had {0} coins, {1} armor, and {2} HP remaining!";
+            string FormatString = "You had {0} damage, {1} armor, and {2} HP remaining!";
             Debug.WriteLine("Ending Game");
             if(mainPlayer.gameIsOver && mainPlayer.gameWon == true)
             {
@@ -62,7 +62,7 @@ namespace TextRPG_OOP_
                 Console.Clear();
                 Console.WriteLine("You Won!, I didn't think you'd do it, well done ");
                 Console.WriteLine();
-                Console.WriteLine(string.Format(FormatString,mainPlayer.playerCoins,mainPlayer.healthSystem.armor,mainPlayer.healthSystem.health));
+                Console.WriteLine(string.Format(FormatString,mainPlayer.playerDamageUps,mainPlayer.healthSystem.armor,mainPlayer.healthSystem.health));
                 Console.WriteLine();
                 Console.WriteLine("Congratulations");
                 Thread.Sleep(3000);
@@ -88,6 +88,7 @@ namespace TextRPG_OOP_
             {
                 Console.CursorVisible = false;
                 CheckPlayerCondition();
+                shop.Update();
                 gameMap.Update();
                 mainPlayer.Update();
                 gameMap.Draw();
@@ -134,16 +135,16 @@ namespace TextRPG_OOP_
             Console.Write("Beat up the inhabitants of this dungeon and climb to the 3rd floor to yoink this thing ");
             gameMap.DrawFinalLoot();
             Console.WriteLine();
-            Console.Write("Collect coins ");
-            gameMap.DrawCoin();
-            Console.Write(" to purchase items, ain't nothing free in this world");
+            Console.Write(" Purchase ");
+            gameMap.DrawDamageUpgrade();
+            Console.Write(" to upgrade your damage");
             Console.WriteLine();
             Console.Write("Purchase ");
             gameMap.DrawHealthPickup();
-            Console.WriteLine(" to recover Health");
+            Console.WriteLine(" to upgprade your health ");
             Console.Write("Purchase "); 
             gameMap.DrawArmor();
-            Console.Write(" to protect your squishy bones from weak attacks");
+            Console.Write(" to upgrade your armour ");
             Console.WriteLine();
             Console.Write("Commit assault against the creatures of this dungeon for cash");
             Console.WriteLine(" Use that cash to improve yourself");
