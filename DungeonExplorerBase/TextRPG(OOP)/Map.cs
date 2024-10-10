@@ -31,9 +31,9 @@ namespace TextRPG_OOP_
         public char coin = ((char)164); // ¤
         public char healthPickup = ((char)3); // ♥
         public char armorPickup = ((char)21); // §
-        static char enemy1 = ((char)4);
-        static char enemy2 = ((char)6);
-        static char enemy3 = ((char)5);
+        static char enemy1 = ((char)4); // ? = Construct
+        static char enemy2 = ((char)6); // ! = Slime
+        static char enemy3 = ((char)5); // & = GoblinFolk
         public static int mapX;
         public static int mapY;
         public int playerX;
@@ -584,12 +584,15 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(mapX + 1, 7);
             Console.Write(armorPickup);
             Console.Write(" = Armor Shop");
+            Console.Write(" Current market price: "); // ShopManager call
             Console.SetCursorPosition(mapX + 1, 8);
             Console.Write(healthPickup);
             Console.Write(" = Health Shop");
+            Console.Write(" Current market price: "); // ShopManager call
             Console.SetCursorPosition(mapX + 1, 9);
             Console.Write(coin);
             Console.Write(" = Coins");
+            Console.Write(" Current market price: "); // ShopManager call
             Console.SetCursorPosition(mapX + 1, 10);
             Console.Write(finalLoot);
             Console.Write(" = Maguffin");

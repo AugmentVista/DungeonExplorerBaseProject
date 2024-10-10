@@ -18,6 +18,19 @@ namespace TextRPG_OOP_
         public Map gameMap;
         public bool isFirstKobald;
         public Settings enemySettings;
+        public string[] PlasmoidNames = // Named after Planeswalkers, 20 names 
+            { "Jace the plasmoid", "Chandra the plasmoid", "Vraska the plasmoid", "Kaya the plasmoid", "Ral the plasmoid",
+        "Oko the plasmoid", "Katio the plasmoid", "Teferi the plasmoid", "Jared the plasmoid", "Liliana the plasmoid",
+        "Garruk the plasmoid", "Kasmina the plasmoid", "Sorin the plasmoid", "Vivien the plasmoid", "Ugin the plasmoid", 
+        "Dovin the plasmoid", "Tibalt the plasmoid", "Wrenn the plasmoid", "Jaya the plasmoid", "Venser the plasmoid"};
+        public string[] ConstructNames = // Named after poltical leaders, 12 names
+            { "Donald Trump", "Barack Obama", "Kamala Haris", "George W. Bush", "Hilary Clinton", "Bill Clinton",
+        "Jimmy Carter", "Bernie Sanders", "Mitt Romney", "Al Gore", "Ron DeSantis", "Sarah Palin"};
+
+        public string[] GoblinNames = // Named after Jim, 12 names
+            {"Jim the Coward", "Jim the Brave", "Jim the Constipated", "Jim the Swift", "Jim the Stinky", "Jim the Ugly",
+        "Jim the Brilliant", "Jim the Worthy", "Jim the Sleepy", "Jim the Kind", "Jim the Loyal", "Not Jim"};
+
         public EnemyManager(Map map, Settings settings)
         {
             isFirstKobald = true;
@@ -36,7 +49,7 @@ namespace TextRPG_OOP_
             {
                 Plasmoid plasmoid = new Plasmoid(RandomConsoleColor(),enemySettings);
                 plasmoid.enemyType = type;
-                plasmoid.name = "Slime " + EnemyTypeCount(type);
+                plasmoid.name = PlasmoidNames[EnemyTypeCount(type)];
                 plasmoid.SetLevelNumber(levelNumber);
                 plasmoid.SetEnemyMaxPosition(gameMap);
                 plasmoid.SetEnemyStats();
@@ -46,7 +59,7 @@ namespace TextRPG_OOP_
             {
                 Construct construct = new Construct(RandomConsoleColor(),enemySettings);
                 construct.enemyType = type;
-                construct.name = "Living Armor " + EnemyTypeCount(type);
+                construct.name = ConstructNames[EnemyTypeCount(type)];
                 construct.SetLevelNumber(levelNumber);
                 construct.SetEnemyMaxPosition(gameMap);
                 construct.SetEnemyStats();
@@ -56,15 +69,7 @@ namespace TextRPG_OOP_
             {
                 GoblinFolk goblinFolk = new GoblinFolk(RandomConsoleColor(),enemySettings);
                 goblinFolk.enemyType = type;
-                if(isFirstKobald)
-                {
-                    goblinFolk.name = "Jim the Coward";
-                    isFirstKobald = false;
-                }
-                else
-                {
-                    goblinFolk.name = "Goblin " + EnemyTypeCount(type);
-                }
+                goblinFolk.name = GoblinNames[EnemyTypeCount(type)];
                 goblinFolk.SetLevelNumber(levelNumber);
                 goblinFolk.SetEnemyMaxPosition(gameMap);
                 goblinFolk.SetEnemyStats();
@@ -138,10 +143,6 @@ namespace TextRPG_OOP_
                 {
                     enemyCount += 1;
                 }
-            }
-            if(type == "GoblinFolk")
-            {
-                enemyCount -= 1;
             }
             return enemyCount;
         }
