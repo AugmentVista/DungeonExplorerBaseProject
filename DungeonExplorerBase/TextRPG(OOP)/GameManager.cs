@@ -18,6 +18,7 @@ namespace TextRPG_OOP_
         public Map gameMap;
         public ItemManager itemManager;
         public Settings settings;
+        public ShopManager shop;
         /// <summary>
         /// Gets all references so game is ready to start up
         /// </summary>
@@ -27,9 +28,10 @@ namespace TextRPG_OOP_
             Debug.WriteLine("Setting Up characters");
             settings = new Settings();
             itemManager = new ItemManager();
+            shop = new ShopManager();
             gameMap = new Map(itemManager);
-            enemyManager = new EnemyManager(gameMap, settings);
-            mainPlayer = new Player(gameMap,itemManager, settings);
+            enemyManager = new EnemyManager(gameMap, settings, shop);
+            mainPlayer = new Player(gameMap,itemManager, settings, shop);
         } 
         /// <summary>
         /// Calls Start methods for all things needed in the game.
@@ -44,6 +46,7 @@ namespace TextRPG_OOP_
             itemManager.Draw();
             mainPlayer.Draw();
             enemyManager.Draw();
+            shop.Start();
         }
         /// <summary>
         /// Handels game ending, for both win and loss.
@@ -93,6 +96,7 @@ namespace TextRPG_OOP_
                 itemManager.Draw();
                 enemyManager.Update();
                 enemyManager.Draw();
+                //shop.Update();
             }
             EndGame();
         }
@@ -123,7 +127,7 @@ namespace TextRPG_OOP_
         /// </summary>
         void Intro()
         {
-            Console.SetWindowSize(100,30);
+            Console.SetWindowSize(120,30);
             Debug.WriteLine("Into!");
             Console.WriteLine("Welcome to Dungeon Explorer!"); // placeholderTitle
             Console.WriteLine();

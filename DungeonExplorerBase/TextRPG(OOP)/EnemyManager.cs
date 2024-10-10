@@ -18,6 +18,7 @@ namespace TextRPG_OOP_
         public Map gameMap;
         public bool isFirstKobald;
         public Settings enemySettings;
+        public ShopManager shop;
         public string[] PlasmoidNames = // Named after Planeswalkers, 20 names 
             { "Jace the plasmoid", "Chandra the plasmoid", "Vraska the plasmoid", "Kaya the plasmoid", "Ral the plasmoid",
         "Oko the plasmoid", "Katio the plasmoid", "Teferi the plasmoid", "Jared the plasmoid", "Liliana the plasmoid",
@@ -31,12 +32,14 @@ namespace TextRPG_OOP_
             {"Jim the Coward", "Jim the Brave", "Jim the Constipated", "Jim the Swift", "Jim the Stinky", "Jim the Ugly",
         "Jim the Brilliant", "Jim the Worthy", "Jim the Sleepy", "Jim the Kind", "Jim the Loyal", "Not Jim"};
 
-        public EnemyManager(Map map, Settings settings)
+        public EnemyManager(Map map, Settings settings, ShopManager shop)
         {
             isFirstKobald = true;
             gameMap = map;
             enemiesList = new List<Enemy>();
             enemySettings = settings;
+            this.shop = shop;
+            shop.SetEnemyManager(this);
         }
         /// <summary>
         /// Generates enemmy based on paramater type, and level number. level number used to determain enemy stats

@@ -26,22 +26,24 @@ namespace TextRPG_OOP_
         public Map gameMap;
         public char avatar;
         public ItemManager itemManager;
-        public Player(Map map, ItemManager IM, Settings settings)
+        public ShopManager shop;
+        public Player(Map map, ItemManager IM, Settings settings, ShopManager shop)
         {
             avatar = ((char)2); //Sets player to smiley face.
             healthSystem.IsAlive = true; // initilizes player as alive.
             gameIsOver = false;
             gameWon = false;
+            this.shop = shop;
             playerCoins = settings.playerStartingCoins; //starts player with 0 coins.
             StartingDamage = settings.PlayerBaseDamage; //Sets player starting damage
             playerDamage = StartingDamage; 
             PlayerMaxHP = settings.playerMaxHP; //Sets stating health
             healthSystem.SetHealth(PlayerMaxHP);//hands starting value to health system
-            name = "Koal"; // Testing for passing string.
+            name = "Player"; // Testing for passing string.
             enemyHitName = ""; //clears enemy hit for starting
             gameMap = map; //hands map to player
             itemManager = IM; //hands item manager to player
-            //Console.Write("Initialized" + playerName);
+            shop.SetPlayer(this);
         }
         /// <summary>
         /// Used at start to prevent player from leaving screen.
@@ -87,6 +89,8 @@ namespace TextRPG_OOP_
         /// <param name="collisionMap"></param>
         public void GetPlayerInput(Map collisionMap)
         {
+            
+           
             int moveX;
             int moveY;
             bool playerMoved;
@@ -111,8 +115,10 @@ namespace TextRPG_OOP_
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
+                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
+                        // check if enemy is dead, if so pass dead condition to Shop
                         moveY = position.y;
                         position.y = moveY;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -171,8 +177,10 @@ namespace TextRPG_OOP_
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
+                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
+                        // check if enemy is dead, if so pass dead condition to Shop
                         moveY = position.y;
                         position.y = moveY;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -231,8 +239,10 @@ namespace TextRPG_OOP_
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
+                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
+                        // check if enemy is dead, if so pass dead condition to Shop
                         moveX = position.x;
                         position.x = moveX;
                         Debug.WriteLine("Player Hit " + enemyHitName);
@@ -291,8 +301,10 @@ namespace TextRPG_OOP_
                     {
                         collisionMap.characters[collisionMap.index].healthSystem.TakeDamage(playerDamage);
                         enemyHitName = collisionMap.characters[collisionMap.index].name;
+                        // pass the name of the hit enemy to Shop
                         enemyHitHealth = collisionMap.characters[collisionMap.index].healthSystem.health;
                         enemyHitArmor = collisionMap.characters[collisionMap.index].healthSystem.armor;
+                        // check if enemy is dead, if so pass dead condition to Shop
                         moveX = position.x;
                         position.x = moveX;
                         Debug.WriteLine("Player Hit " + enemyHitName);

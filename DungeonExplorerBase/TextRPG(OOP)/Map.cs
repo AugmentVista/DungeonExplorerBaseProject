@@ -53,7 +53,6 @@ namespace TextRPG_OOP_
             Initialization();
             //Sets item manager from call in GameManager
             itemManager = IM;
-            //Console.Write("Initialized Map");
         }
         /// <summary>
         /// Starts the map building process.
