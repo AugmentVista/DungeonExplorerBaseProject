@@ -73,20 +73,20 @@ namespace TextRPG_OOP_
         /// <param name="player"></param>
         public void Update(Player player)
         {
-            ChckItemPositions(player);
+            CheckItemPositions(player);
         }
         /// <summary>
         /// If player is on an item, updates stats based on pickups
         /// </summary>
         /// <param name="player"></param>
-        public void ChckItemPositions(Player player)
+        public void CheckItemPositions(Player player)
         {
             for(int i = 0; i < items.Count(); i++)
             {
                 if(items[i].position.x == player.position.x && items[i].position.y == player.position.y)
                 {
-                    
-                    if(items[i].itemType == "Coin") // call to shopManager to check if player can afford item
+                    // call to shopManager to check if player can afford item
+                    if (items[i].itemType == "Coin") 
                     {
                         player.playerCoins += items[i].gainAmount;
                         items[i].isActive = false;    
@@ -97,7 +97,8 @@ namespace TextRPG_OOP_
                         player.healthSystem.health += items[i].gainAmount;
                         items[i].isActive = false;  
                     }
-                    if(items[i].itemType == "Armor Pickup") // call to shopManager to check if player can afford item
+                    // call to shopManager to check if player can afford item
+                    if (items[i].itemType == "Armor Pickup") 
                     {
                         player.healthSystem.armor += items[i].gainAmount;
                         items[i].isActive = false;  

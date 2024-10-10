@@ -27,8 +27,8 @@ namespace TextRPG_OOP_
         public char spikeTrap = ((char)23); // ↨
         public char stairsDown = ((char)30); // ▲
         public char startPos = ((char)31); // ▼
-        public char finalLoot = ((char)165); 
-        public char coin = ((char)164); 
+        public char finalLoot = ((char)165); // ¥
+        public char coin = ((char)164); // ¤
         public char healthPickup = ((char)3); // ♥
         public char armorPickup = ((char)21); // §
         static char enemy1 = ((char)4);
@@ -114,6 +114,7 @@ namespace TextRPG_OOP_
             DrawMap();
             DrawHUD();
             DrawEnemyLegend();
+            DrawItemLegend();
         }
         /// <summary>
         /// Draws the map of the current level
@@ -575,6 +576,23 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(mapX + 1, 5);
             Console.Write(enemy3);
             Console.Write(" = Goblin Folk");
+        }
+
+        public void DrawItemLegend()
+        {
+            //Draws legend for items and their prices.
+            Console.SetCursorPosition(mapX + 1, 7);
+            Console.Write(armorPickup);
+            Console.Write(" = Armor Shop");
+            Console.SetCursorPosition(mapX + 1, 8);
+            Console.Write(healthPickup);
+            Console.Write(" = Health Shop");
+            Console.SetCursorPosition(mapX + 1, 9);
+            Console.Write(coin);
+            Console.Write(" = Coins");
+            Console.SetCursorPosition(mapX + 1, 10);
+            Console.Write(finalLoot);
+            Console.Write(" = Maguffin");
         }
         /// <summary>
         /// Draws HUD under game map

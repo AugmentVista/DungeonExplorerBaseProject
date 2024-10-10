@@ -123,11 +123,11 @@ namespace TextRPG_OOP_
         /// </summary>
         void Intro()
         {
-            Console.SetWindowSize(90, 30);
+            Console.SetWindowSize(100,30);
             Debug.WriteLine("Into!");
             Console.WriteLine("Welcome to Dungeon Explorer!"); // placeholderTitle
             Console.WriteLine();
-            Console.Write("Escape the dungeon and climb to the 2nd floor to find the chalice. ");
+            Console.Write("Beat up the inhabitants of this dungeon and climb to the 3rd floor to yoink this thing ");
             gameMap.DrawFinalLoot();
             Console.WriteLine();
             Console.Write("Collect coins ");
@@ -142,7 +142,7 @@ namespace TextRPG_OOP_
             Console.Write(" to protect your squishy bones from weak attacks");
             Console.WriteLine();
             Console.Write("Commit assault against the creatures of this dungeon for cash");
-            Console.WriteLine("Use that cash to improve yourself");
+            Console.WriteLine(" Use that cash to improve yourself");
             Console.WriteLine();
             Console.WriteLine("Press any key to get started!");
             Console.ReadKey(true);

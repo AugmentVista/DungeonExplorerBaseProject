@@ -8,5 +8,9 @@ namespace TextRPG_OOP_
 {
     internal class ShopManager
     {
+
+
+
+
     }
 }
