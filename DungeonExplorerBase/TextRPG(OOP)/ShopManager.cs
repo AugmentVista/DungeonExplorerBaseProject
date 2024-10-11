@@ -25,7 +25,15 @@ namespace TextRPG_OOP_
         public int damageUpgradesTaken = 0;
 
 
-        public void OpenShop() { player.shopping = true; } // disables movement while shopping
+        public void OpenShop() 
+        {
+            if (playerCoins < armourUpgradeCost || playerCoins < healthUpgradeCost || playerCoins < damageUpgradeCost)
+            {
+                player.shopping = false;
+                return;
+            }
+            else if (playerCoins < armourUpgradeCost) { player.shopping = true; } // disables movement while shopping
+        } 
 
         public void CloseShop() { player.shopping = false; }
         

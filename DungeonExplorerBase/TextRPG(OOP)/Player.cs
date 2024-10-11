@@ -167,13 +167,14 @@ namespace TextRPG_OOP_
                 Console.ReadKey(true); 
             }
             playerInput = Console.ReadKey(true);
-
-            //if(playerMoved == false)
             {
+                if (playerInput.Key == ConsoleKey.Q || playerInput.Key == ConsoleKey.E)
+                { 
+                
+                }
                 if (shopping) { return; }
                 if(playerInput.Key == ConsoleKey.W || playerInput.Key == ConsoleKey.UpArrow)
                 {
-                    //Moves player up
                     moveY = (position.y - 1);
                     if(moveY <= 0)
                     {

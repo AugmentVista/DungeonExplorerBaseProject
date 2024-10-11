@@ -652,11 +652,11 @@ namespace TextRPG_OOP_
         }
         public void ShopMenu()
         {
+            mainPlayer.shop.OpenShop();
             Console.SetCursorPosition(0, mapY + 2);
             Console.Clear();
             Console.WriteLine("hahahhaha");
             Console.WriteLine("Yer in da shop");
-            mainPlayer.shop.OpenShop();
         }
         /// <summary>
         /// Draws HUD under game map
