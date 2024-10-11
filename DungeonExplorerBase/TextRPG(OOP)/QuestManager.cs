@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,23 +11,62 @@ namespace TextRPG_OOP_
     {
         Player player;
         Map map;
+        public static int questsCompleted = 0;
 
-        public List<string> questsOrder; // change to queue
+        public Queue<string> questsOrder;
 
-        public string firstQuestDetails;
-        public string secondQuestDetails;
+        public string firstQuestDetails = " Make a purchase at a shop ";
+        public string secondQuestDetails = " Acquire Wealth (20 or more money)";
+        public string thirdQuestDetails = " Complete level 1";
+        public string fourthQuestDetails = " Slay 10 enemies";
+        public string fifthQuestDetails = " Complete level 2";
+        public string sixthQuestDetails = " Complete final level";
 
+        public string activeQuest;
         public void Start()
         {
-            firstQuestDetails = " Earn your first dollar ";
-            secondQuestDetails = "";
+            questsOrder = new Queue<string>();
+            questsOrder.Enqueue(firstQuestDetails);
+            questsOrder.Enqueue(secondQuestDetails);
+            questsOrder.Enqueue(thirdQuestDetails);
+            questsOrder.Enqueue(fourthQuestDetails);
+            questsOrder.Enqueue(fifthQuestDetails);
+            questsOrder.Enqueue(sixthQuestDetails);
+            UpdateActiveQuest();
         }
         public void UpdateActiveQuest()
         {
-            FirstQuest();
+            switch (questsCompleted)
+            {
+                case 0:
+                    activeQuest = firstQuestDetails;
+                    break;
+                case 1:
+                    activeQuest = secondQuestDetails;
+                    break;
+                case 2:
+                    activeQuest = thirdQuestDetails;
+                    break;
+                case 3:
+                    activeQuest = fourthQuestDetails;
+                    break;
+                case 4:
+                    activeQuest = fifthQuestDetails;
+                    break;
+                case 5:
+                    activeQuest= sixthQuestDetails;
+                    break;
+                case 6:
+                    activeQuest = "You've completed all the quests";
+                    break; 
+                default: activeQuest = "No active quests";
+                    break;
+            }
+        }
 
-            // if firstquest completed 
-            // switch (newquest)
+        public void QuestUI()
+        {
+            map.UpdateQuestUIInfo();
         }
 
         public void SetPlayer(Player player)
@@ -37,11 +77,6 @@ namespace TextRPG_OOP_
         public void SetMap(Map map)
         {
             this.map = map;
-        }
-
-        public void FirstQuest()
-        {
-            player.gameMap.UpdateQuestUIInfo();
         }
 
     }

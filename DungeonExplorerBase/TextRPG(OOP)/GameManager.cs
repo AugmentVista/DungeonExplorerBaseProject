@@ -41,15 +41,15 @@ namespace TextRPG_OOP_
         private void SetUpGame()
         {
             Debug.WriteLine("Setting up starting map");
+            questManager.Start();
             itemManager.Start(gameMap);
             gameMap.Start(mainPlayer, enemyManager);
             mainPlayer.Start();
-            shop.Start();
             gameMap.Draw();
             itemManager.Draw();
             mainPlayer.Draw();
             enemyManager.Draw();
-            questManager.UpdateActiveQuest();
+            
         }
         /// <summary>
         /// Handels game ending, for both win and loss.
@@ -61,19 +61,21 @@ namespace TextRPG_OOP_
             if(mainPlayer.gameIsOver && mainPlayer.gameWon == true)
             {
                 Debug.WriteLine("Player won");
-                Thread.Sleep(2000);
                 Console.Clear();
                 Console.WriteLine("You Won!, I didn't think you'd do it, well done ");
+                Console.WriteLine("You finished " + QuestManager.questsCompleted.ToString() + " Quests!");
                 Console.WriteLine();
                 Console.WriteLine(string.Format(FormatString,mainPlayer.playerDamageUps,mainPlayer.healthSystem.armour,mainPlayer.healthSystem.health));
                 Console.WriteLine();
                 Console.WriteLine("Congratulations");
+                Console.ReadKey(true);
                 Thread.Sleep(3000);
                 Environment.Exit(0);
             }
             if(mainPlayer.gameIsOver && mainPlayer.gameWon != true)
             {
                 Debug.WriteLine("Player lost");
+                Console.WriteLine("You finished " + QuestManager.questsCompleted.ToString() + " Quests!");
                 Thread.Sleep(2000); 
                 Console.Clear();
                 Console.WriteLine("You have lost, that's okay. Try again?");
@@ -99,7 +101,6 @@ namespace TextRPG_OOP_
                 itemManager.Draw();
                 enemyManager.Update();
                 enemyManager.Draw();
-                shop.Update(); // empty
             }
             EndGame();
         }
@@ -112,6 +113,7 @@ namespace TextRPG_OOP_
             StartUp();
             Intro();
             SetUpGame();
+            QuestManager.questsCompleted = 0;
             DungeonGameLoop();
         }
         /// <summary>
@@ -133,7 +135,7 @@ namespace TextRPG_OOP_
         {
             while (isPaused)
             {
-                // do somethin
+                // do nothing
 
                 if (!isPaused)
                 {
@@ -151,14 +153,14 @@ namespace TextRPG_OOP_
             Console.Write("Beat up the inhabitants of this dungeon and climb to the 3rd floor to yoink this thing ");
             gameMap.DrawFinalLoot();
             Console.WriteLine();
-            Console.Write("Purchase ");
+            Console.Write("Shop here ");
             gameMap.DrawDamageUpgrade();
             Console.Write(" to upgrade your damage");
             Console.WriteLine();
-            Console.Write("Purchase ");
+            Console.Write("Shop here ");
             gameMap.DrawHealthPickup();
             Console.WriteLine(" to upgprade your health ");
-            Console.Write("Purchase "); 
+            Console.Write("Shop here "); 
             gameMap.DrawArmor();
             Console.Write(" to upgrade your armour ");
             Console.WriteLine();

@@ -40,13 +40,18 @@ namespace TextRPG_OOP_
         /// <param name="Damage"></param>
         public void TakeDamage(int Damage) //Damage taking system.
         {
-            if (Damage - armour <= 1) { Damage = 1; }
-            Damage -= armour;
-            health -= Damage;
-            if(health <= 0 )
+            if (Damage - armour <= 0)
             {
-                health = 0;
-                IsAlive = false;
+                Debug.WriteLine("Armor is too hard to damage");
+            }
+            else
+            {
+                health -= Damage - armour;
+                if (health <= 0)
+                {
+                    health = 0;
+                    IsAlive = false;
+                }
             }
         }
         /// <summary>

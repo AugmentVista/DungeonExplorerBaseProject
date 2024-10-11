@@ -16,18 +16,14 @@ namespace TextRPG_OOP_
         public static bool Paused;
         public ConsoleKeyInfo shopInput;
 
-        public int playerCoins = 5;
+        public int playerCoins = 10;
         public int coinAmount = 0;
-        private int upgradeCostMultiplier = 2;
         private int costOfType;
+        public int deadguys = 0;
 
-        public int armourUpgradeCost;
-        public int healthUpgradeCost;
-        public int damageUpgradeCost;
-
-        public int armourUpgradesTaken = 0;
-        public int healthUpgradesTaken = 0;
-        public int damageUpgradesTaken = 0;
+        public int armourUpgradeCost = 3;
+        public int healthUpgradeCost = 1;
+        public int damageUpgradeCost = 2;
 
         public int playerStatToIncrease = 0;
 
@@ -37,25 +33,24 @@ namespace TextRPG_OOP_
             switch (type)
             {
                 case "Armour":
-                    UpdateUpgradeCosts("Armour", 1);
+                    UpdateUpgradeCosts(type);
+                    player.gameMap.UpdateArmorUIInfo(type);
                     costOfType = armourUpgradeCost;
-                    Console.WriteLine();
                     break;
                 case "Health":
-                    UpdateUpgradeCosts("Health", 1);
+                    UpdateUpgradeCosts(type);
+                    player.gameMap.UpdateHealthUIInfo(type);
                     costOfType = healthUpgradeCost;
-                    Console.WriteLine();
                     break;
                 case "Damage":
-                    UpdateUpgradeCosts("Damage", 1);
-                    costOfType = damageUpgradesTaken;
-                    Console.WriteLine();
+                    UpdateUpgradeCosts(type);
+                    player.gameMap.UpdateDamageUIInfo(type);
+                    costOfType = damageUpgradeCost;
                     break;
             }
-
             Console.Clear();
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-            Console.WriteLine("░░░░░" + " You've Entered the Shop! " + "          ░░░░░"); // 25 char + 15 char
+            Console.WriteLine("░░░░░" + " You've Entered the Shop! " + "          ░░░░░");
             Console.WriteLine("░░░░░" + " This shop specializes in " + type + "    ░░░░░");
             Console.WriteLine("░░░░░" + " Press any key to view our deals " + "   ░░░░░");
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
@@ -63,12 +58,10 @@ namespace TextRPG_OOP_
             Console.Clear();
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
             Console.WriteLine("You have " + playerCoins + " Money to spend ");
-            Console.WriteLine("Press V to purchase + 1 of " + type + " Cost: " + costOfType * 1 + "       ░░░░░");
-            Console.WriteLine("Press B to purchase + 2 of " + type + " Cost: " + costOfType * 2 + "       ░░░░░");
-            Console.WriteLine("Press N to purchase + 3 of " + type + " Cost: " + costOfType * 3 + "       ░░░░░");
+            Console.WriteLine("Press V to purchase + 1 of " + type + " Cost: " + costOfType * 2 + "       ░░░░░");
+            Console.WriteLine("Press B to purchase + 2 of " + type + " Cost: " + costOfType * 3 + "       ░░░░░");
+            Console.WriteLine("Press N to purchase + 3 of " + type + " Cost: " + costOfType * 4 + "       ░░░░░");
             Console.WriteLine("Press M to purchase + 5 of " + type + " Cost: " + costOfType * 5 + "       ░░░░░");
-            Console.WriteLine();
-            Console.WriteLine();
             Console.WriteLine("Press Q to Exit the shop when you're finished ");
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
             PurchaseUpgrades(type);
@@ -78,20 +71,64 @@ namespace TextRPG_OOP_
         {
             shopInput = Console.ReadKey(true);
 
-
             switch (shopInput.Key)
             {
                 case ConsoleKey.V:
-                    playerStatToIncrease = 1;
+                    if (playerCoins < costOfType)
+                    {
+                        Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
+                        Console.ReadKey();
+                        CloseShop();
+                    }
+                    else if (playerCoins >= costOfType)
+                    {
+                        playerStatToIncrease = 1;
+                        playerCoins -= costOfType * playerStatToIncrease;
+                        if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
+
+                    }
                     break;
                 case ConsoleKey.B:
-                    playerStatToIncrease = 2;
+                    if (playerCoins < costOfType)
+                    {
+                        Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
+                        Console.ReadKey();
+                        CloseShop();
+                    }
+                    else if (playerCoins >= costOfType)
+                    {
+                        playerStatToIncrease = 2;
+                        playerCoins -= costOfType * playerStatToIncrease;
+                        if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
+                    }
                     break;
                 case ConsoleKey.N:
-                    playerStatToIncrease = 3;
+                    if (playerCoins < costOfType)
+                    {
+                        Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
+                        Console.ReadKey();
+                        CloseShop();
+                    }
+                    else if (playerCoins >= costOfType)
+                    {
+                        playerStatToIncrease = 3;
+                        playerCoins -= costOfType * playerStatToIncrease;
+                        if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
+                    }
                     break;
                 case ConsoleKey.M:
-                    playerStatToIncrease = 5;
+                    if (playerCoins < costOfType)
+                    {
+                        Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
+                        Console.ReadKey();
+                        CloseShop();
+                    }
+                    else if (playerCoins >= costOfType)
+                    {
+                        playerStatToIncrease = 5;
+                        playerCoins -= costOfType * playerStatToIncrease;
+                        if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
+                    }
                     break;
                 case ConsoleKey.Q:
                     playerStatToIncrease = 0;
@@ -108,20 +145,28 @@ namespace TextRPG_OOP_
             switch (type)
             {
                 case "Armour":
-                    player.playerArmourUps += playerStatToIncrease;
+                    if (playerCoins >= costOfType) { player.playerArmourUps = player.playerArmourUps + playerStatToIncrease; }
+                    
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    if (player.playerArmour >= Settings.playerMaxArmour)
+                    { 
                     Console.WriteLine("Cannot exceed armour limit of: " + Settings.playerMaxArmour);
+                    }
                     Console.ReadKey();
                     CloseShop();
                     break;
                 case "Health":
-                    player.playerHealthUps += playerStatToIncrease;
+                    if (playerCoins >= costOfType) { Settings.playerMaxHP += playerStatToIncrease; }
+                    
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    Console.WriteLine("As as bonus, your health as been restored");
+                    player.healthSystem.SetHealth(Settings.playerMaxHP);
                     Console.ReadKey();
                     CloseShop();
                     break;
                 case "Damage":
-                    player.playerDamageUps += playerStatToIncrease;
+                    if (playerCoins >= costOfType) { player.playerDamageUps = player.playerDamageUps + playerStatToIncrease; }
+                        
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
                     if (player.playerDamage >= Settings.playerMaxDamage) 
                     { 
@@ -131,6 +176,7 @@ namespace TextRPG_OOP_
                     CloseShop();
                     break;
             }
+            Debug.WriteLine(playerStatToIncrease);
         }
 
         public void CloseShop() 
@@ -153,48 +199,45 @@ namespace TextRPG_OOP_
         {
             if (enemyManager.PlasmoidNames.Contains(nameOfEnemy))
             {
-                coinAmount = 1;
+                coinAmount++;
                 playerCoins += coinAmount;
+                deadguys++;
+                if (QuestManager.questsCompleted < 4 && deadguys > 10) { QuestManager.questsCompleted = 4; }
             }
             else if (enemyManager.ConstructNames.Contains(nameOfEnemy))
             {
-                coinAmount = 2;
+                coinAmount += 2;
                 playerCoins += coinAmount;
+                deadguys++;
+                if (QuestManager.questsCompleted < 4 && deadguys > 10) { QuestManager.questsCompleted = 4; }
             }
             else if (enemyManager.GoblinNames.Contains(nameOfEnemy)) 
             {
-                coinAmount = 3;
+                coinAmount += 3;
                 playerCoins += coinAmount;
+                deadguys++;
+                if (QuestManager.questsCompleted < 4 && deadguys > 10) { QuestManager.questsCompleted = 4; }
             }
             Debug.WriteLine(playerCoins);
         }
 
-        public void UpdateUpgradeCosts(string upgradeType, int amountPurchased)
+        public void UpdateUpgradeCosts(string upgradeType)
         {
-            // as stock goes down price should go up
             if (upgradeType == "Armor")
             {
-                armourUpgradesTaken += amountPurchased;
-                armourUpgradeCost = armourUpgradesTaken * upgradeCostMultiplier;
+                armourUpgradeCost++;
+                Debug.WriteLine(armourUpgradeCost);
             }
             if (upgradeType == "Health")
-            { 
-                healthUpgradesTaken += amountPurchased;
-                healthUpgradeCost = healthUpgradesTaken * upgradeCostMultiplier;
+            {
+                healthUpgradeCost++;
+                Debug.WriteLine(healthUpgradeCost);
             }
             if (upgradeType == "Damage")
             {
-                damageUpgradesTaken += amountPurchased;
-                damageUpgradeCost = damageUpgradesTaken * upgradeCostMultiplier;
+                damageUpgradeCost++;
+                Debug.WriteLine(damageUpgradeCost);
             }
-        }
-
-        public void Start()
-        {
-
-        }
-        public void Update()
-        {
         }
     }
 }

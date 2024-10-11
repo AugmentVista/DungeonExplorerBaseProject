@@ -48,9 +48,6 @@ namespace TextRPG_OOP_
         public int index;
         public int itemIndex;
 
-        public int damageUpgradeCount;
-        public int healthUpgradeCount ;
-        public int armourUpgradeCount;
 
         public EnemyManager enemyManager;
         public Player mainPlayer;
@@ -59,12 +56,10 @@ namespace TextRPG_OOP_
         public Map(ItemManager IM, QuestManager quest) //Constructor
         {
             questManager = quest;
-            quest.SetMap(this);
             Initialization();
             //Sets item manager from call in GameManager
             itemManager = IM;
-
-            
+            quest.SetMap(this);
         }
         /// <summary>
         /// Starts the map building process.
@@ -98,7 +93,7 @@ namespace TextRPG_OOP_
             AddToCharacterList(mainPlayer);
             SetPlayerSpawn(mainPlayer);
             GetPlayerMaxPosition(mainPlayer);
-            DrawItemLegend();
+            UpdateAllUI(); // displays the starting prices for upgrades
         }
         /// <summary>
         /// Creates map based on active floor.
@@ -120,7 +115,6 @@ namespace TextRPG_OOP_
         {
             index = 0;
             itemIndex = 0;
-            DrawEnemyLegend();
         }
         /// <summary>
         /// Calls function to draw map/Hud/Legend
@@ -130,6 +124,7 @@ namespace TextRPG_OOP_
             DrawMap();
             DrawHUD();
             DrawEnemyLegend();
+            UpdateAllUI();
         }
         /// <summary>
         /// Draws the map of the current level
@@ -186,21 +181,18 @@ namespace TextRPG_OOP_
                         itemManager.AddItemToList("Damage Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        damageUpgradeCount += 1;
                     }
                     if(tile == '"' && levelChanged == false)
                     {
                         itemManager.AddItemToList("Health Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        healthUpgradeCount += 1;
                     }
                     if(tile == '+' && levelChanged == false)
                     {
                         itemManager.AddItemToList("Armor Pickup",x,y);
                         itemManager.items[itemCount].index = itemCount;
                         itemCount += 1;
-                        armourUpgradeCount += 1;
                     }
                     DrawTile(tile);
                 }
@@ -437,6 +429,7 @@ namespace TextRPG_OOP_
             {
                 path = path1;
                 floorMap = File.ReadAllLines(path);
+                if (QuestManager.questsCompleted < 3) { QuestManager.questsCompleted = 3; }
             }
             if(levelNumber == 2)
             {
@@ -449,6 +442,7 @@ namespace TextRPG_OOP_
                 levelNumber = 3;
                 path = path3;
                 floorMap = File.ReadAllLines(path);
+                if (QuestManager.questsCompleted < 5) { QuestManager.questsCompleted = 5; }
             }
             if(levelNumber > 3 || levelNumber <= 0)
             {
@@ -578,9 +572,6 @@ namespace TextRPG_OOP_
             //resets items for moving floors.
             itemManager.items.Clear();
             itemCount = 0;
-            damageUpgradeCount = 0;
-            healthUpgradeCount = 0;
-            armourUpgradeCount = 0;
         }
         /// <summary>
         /// Draws legend to screen outside of the game map
@@ -598,58 +589,91 @@ namespace TextRPG_OOP_
             Console.Write(" = Goblin Folk");
         }
 
-        public void DrawItemLegend()
+        public void UpdateAllUI()
         {
-            UpdateArmorUIInfo();
-            UpdateHealthUIInfo();
-            UpdateDamageUIInfo();
+            UpdateArmorUIInfo("Display price");
+            UpdateHealthUIInfo("Display price");
+            UpdateDamageUIInfo("Display price");
             UpdateQuestUIInfo();
         }
 
         public void UpdateQuestUIInfo()
         {
-            Console.SetCursorPosition(mapX + 1, 13);
-            Console.WriteLine("Active Quest is: ");
+            questManager.UpdateActiveQuest();
+            Console.SetCursorPosition(mapX + 1, 15);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Quests to be completed: ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            int lineOffset = 1;
+            foreach (var quest in questManager.questsOrder)
+            {
+                Console.SetCursorPosition(mapX + 1, 16 + lineOffset);
+                Console.Write(quest);
+                Console.WriteLine();
+                lineOffset++;
+            }
         }
 
-        public void UpdateArmorUIInfo()
+        public void UpdateArmorUIInfo(string type)
         {
-            Console.SetCursorPosition(mapX + 1, 7);
-            Console.Write(armorPickup);
-            Console.Write(" = Armor Item Shop");
+            if (type == "Armour")
+            {
+                Console.SetCursorPosition(mapX + 1, 7);
+                Console.Write(armorPickup);
+                Console.Write(" = Armor Item Shop");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Armor", 0);
+                mainPlayer.shop.UpdateUpgradeCosts(type); // every call doubles price
 
-            int newUpgradeCost = mainPlayer.shop.armourUpgradeCost;
-
-            Console.SetCursorPosition(mapX + 1, 8);
-            Console.Write(" Current market price: " + newUpgradeCost);
+                Console.SetCursorPosition(mapX + 1, 8);
+                Console.Write(" Current market price: " + mainPlayer.shop.armourUpgradeCost);
+            }
+            else
+                Console.SetCursorPosition(mapX + 1, 7);
+                Console.Write(armorPickup);
+                Console.Write(" = Armor Item Shop");
+                Console.SetCursorPosition(mapX + 1, 8);
+                Console.Write(" Current market price: " + mainPlayer.shop.armourUpgradeCost);
         }
 
-        public void UpdateHealthUIInfo()
+        public void UpdateHealthUIInfo(string type)
         {
-            Console.SetCursorPosition(mapX + 1, 9);
-            Console.Write(healthPickup);
-            Console.Write(" Health Item Shop ");
+            if (type == "Health")
+            {
+                Console.SetCursorPosition(mapX + 1, 9);
+                Console.Write(healthPickup);
+                Console.Write(" Health Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Health", 0);
-            int newUpgradeCost = mainPlayer.shop.healthUpgradeCost;
+                mainPlayer.shop.UpdateUpgradeCosts(type); // every call doubles price
 
-            Console.SetCursorPosition(mapX + 1, 10);
-            Console.Write(" Current market price: " + newUpgradeCost);
+                Console.SetCursorPosition(mapX + 1, 10);
+                Console.Write(" Current market price: " + mainPlayer.shop.healthUpgradeCost);
+            }
+            else
+                Console.SetCursorPosition(mapX + 1, 9);
+                Console.Write(healthPickup);
+                Console.Write(" Health Item Shop ");
+                Console.SetCursorPosition(mapX + 1, 10);
+                Console.Write(" Current market price: " + mainPlayer.shop.healthUpgradeCost);
         }
-
-        public void UpdateDamageUIInfo()
+        public void UpdateDamageUIInfo(string type)
         {
-            Console.SetCursorPosition(mapX + 1, 11);
-            Console.Write(damagePickup);
-            Console.Write(" Damage Item Shop ");
+            if (type == "Damage")
+            {
+                Console.SetCursorPosition(mapX + 1, 11);
+                Console.Write(damagePickup);
+                Console.Write(" Damage Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Damage", 0);
-            int newUpgradeCost = mainPlayer.shop.damageUpgradeCost;
+                mainPlayer.shop.UpdateUpgradeCosts(type); // every call doubles price
 
-            Console.SetCursorPosition(mapX + 1, 12);
-            Console.Write(" Current market price: " + newUpgradeCost);
+                Console.SetCursorPosition(mapX + 1, 12);
+                Console.Write(" Current market price: " + mainPlayer.shop.damageUpgradeCost);
+            }
+            else
+                Console.SetCursorPosition(mapX + 1, 11);
+                Console.Write(damagePickup);
+                Console.Write(" Damage Item Shop ");
+                Console.SetCursorPosition(mapX + 1, 12);
+                Console.Write(" Current market price: " + mainPlayer.shop.damageUpgradeCost);
         }
 
         /// <summary>
@@ -659,10 +683,15 @@ namespace TextRPG_OOP_
         {
             //Draws HUD.
             Console.SetCursorPosition(0,mapY + 1);
-
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine(" Current Quest: ");
+            questManager.UpdateActiveQuest();
+            Console.WriteLine(questManager.activeQuest + "                   ");
+            SetColorDefault();
             string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
             string FormatString = "HP: {0 } / {1 }  Damage: {2}  Armor: {3} Money: {4}   ";
-            Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, Settings.playerMaxHP , mainPlayer.playerDamage, mainPlayer.healthSystem.armour, mainPlayer.shop.playerCoins));
+            Console.WriteLine(string.Format(FormatString, mainPlayer.playerHealth, Settings.playerMaxHP , mainPlayer.playerDamage, mainPlayer.playerArmour, mainPlayer.shop.playerCoins));
             if (mainPlayer.enemyHitName == "")
             {
                 Console.WriteLine();
@@ -670,7 +699,7 @@ namespace TextRPG_OOP_
             else
             {
                 Console.WriteLine(string.Format(enemyHUDString, mainPlayer.enemyHitName, mainPlayer.enemyHitHealth, mainPlayer.enemyHitArmor));
-                Console.WriteLine(mainPlayer.name + " Dealt: " + mainPlayer.playerDamage + " damage");
+
             }
         }
     }

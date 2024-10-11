@@ -27,7 +27,7 @@ namespace TextRPG_OOP_
             {
                 item = ((char)3);
                 color = ConsoleColor.Red;
-                gainAmount = Settings.playerMaxHP / 4;
+                gainAmount = 0;
             }
             if(itemType == "Damage Pickup")
             {
@@ -39,7 +39,7 @@ namespace TextRPG_OOP_
             {
                 item = ((char)21);
                 color = ConsoleColor.DarkBlue;
-                gainAmount = 1 * map.levelNumber;
+                gainAmount = 0;
             }
             position.x = x;
             position.y = y;

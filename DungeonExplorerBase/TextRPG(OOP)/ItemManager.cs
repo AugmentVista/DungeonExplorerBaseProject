@@ -87,23 +87,19 @@ namespace TextRPG_OOP_
                 {
                     if (items[i].itemType == "Damage Pickup" && player.playerDamage < Settings.playerMaxDamage) 
                     {
-                        player.playerDamageUps += items[i].gainAmount;
-                        gameMap.damageUpgradeCount++;
+                        //player.playerDamageUps += items[i].gainAmount;
                         items[i].isActive = false;
                     }
-                    if (items[i].itemType == "Health Pickup" && player.healthSystem.health < Settings.playerMaxHP)
+                    if (items[i].itemType == "Health Pickup" && player.playerHealth < Settings.playerMaxHP)
                     {
-                        player.healthSystem.health += items[i].gainAmount;
-                        gameMap.healthUpgradeCount++;
+                        //player.healthSystem.health += items[i].gainAmount;
                         items[i].isActive = false;  
                     }
                     if (items[i].itemType == "Armor Pickup" && player.playerArmour < Settings.playerMaxArmour) 
                     {
-                        player.healthSystem.armour += items[i].gainAmount;
-                        gameMap.armourUpgradeCount++;
+                        //player.healthSystem.armour += items[i].gainAmount;
                         items[i].isActive = false;  
                     }
-                    // else write "Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!"
                 }
             }
         }
