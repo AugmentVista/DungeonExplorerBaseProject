@@ -600,16 +600,14 @@ namespace TextRPG_OOP_
             UpdateArmorUIInfo();
             UpdateHealthUIInfo();
             UpdateDamageUIInfo();
+            UpdateQuestUIInfo();
         }
-
 
         public void UpdateQuestUIInfo()
         {
             Console.SetCursorPosition(mapX + 1, 13);
             Console.WriteLine("Active Quest is: ");
         }
-
-        
 
         public void UpdateArmorUIInfo()
         {
@@ -650,18 +648,11 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(mapX + 1, 12);
             Console.Write(" Current market price: " + newUpgradeCost);
         }
-        public void ShopMenu()
-        {
-            mainPlayer.shop.OpenShop();
-            Console.SetCursorPosition(0, mapY + 2);
-            Console.Clear();
-            Console.WriteLine("hahahhaha");
-            Console.WriteLine("Yer in da shop");
-        }
+
         /// <summary>
         /// Draws HUD under game map
         /// </summary>
-        void DrawHUD() //Add to a UIManager Class
+        public void DrawHUD() //Add to a UIManager Class
         {
             //Draws HUD.
             Console.SetCursorPosition(0,mapY + 1);
@@ -669,13 +660,19 @@ namespace TextRPG_OOP_
             string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
             string FormatString = "HP: {0}  Damage: {1}  Armor: {2} Money: {3}   ";
             Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, mainPlayer.playerDamage, mainPlayer.healthSystem.armor, mainPlayer.shop.playerCoins));
-            if(mainPlayer.enemyHitName == "")
+            if (mainPlayer.enemyHitName == "")
             {
                 Console.WriteLine();
             }
+            else if (mainPlayer.shopping)
+            {
+                Console.SetCursorPosition(0, mapY + 2);
+                Console.WriteLine("You have stepped on a shop");
+                Console.WriteLine("Press E to enter the shop or Q to skip the shop");
+            }
             else
             {
-                Console.WriteLine(string.Format(enemyHUDString,mainPlayer.enemyHitName,mainPlayer.enemyHitHealth,mainPlayer.enemyHitArmor));
+                Console.WriteLine(string.Format(enemyHUDString, mainPlayer.enemyHitName, mainPlayer.enemyHitHealth, mainPlayer.enemyHitArmor));
             }
         }
     }

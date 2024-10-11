@@ -75,6 +75,11 @@ namespace TextRPG_OOP_
             position.maxX = mapX - 1;
             position.maxY = mapY - 1;
         }
+        public void SetPlayerPosition(int x, int y)
+        {
+            position.x = x;
+            position.y = y;
+        }
         /// <summary>
         /// Sets player position to x/y postions. 
         /// </summary>
@@ -85,9 +90,12 @@ namespace TextRPG_OOP_
         {
             if (itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
             {
-                GoShopping();
+                TriggerShop("Health");
                 if (shopping)
                 {
+                    itemManager.items[collisionMap.itemIndex].isActive = false;
+                    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                    itemManager.items[collisionMap.itemIndex].position.y = 0;
                     return;
                 }
                 else if (!shopping) 
@@ -101,10 +109,12 @@ namespace TextRPG_OOP_
             }
             if (itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
             {
-                GoShopping();
-                Debug.WriteLine(shopping);
+                TriggerShop("Armour");
                 if (shopping)
                 {
+                    itemManager.items[collisionMap.itemIndex].isActive = false;
+                    itemManager.items[collisionMap.itemIndex].position.x = 0;
+                    itemManager.items[collisionMap.itemIndex].position.y = 0;
                     return;
                 }
                 else if (!shopping)
@@ -118,47 +128,54 @@ namespace TextRPG_OOP_
             }
             if (itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
             {
-                GoShopping();
+                TriggerShop("Damage");
                 if (shopping)
                 {
+                    if (itemManager.items[collisionMap.itemIndex] != null)
+                    {
+                        itemManager.items[collisionMap.itemIndex].isActive = false;
+                        itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        itemManager.items[collisionMap.itemIndex].position.y = 0;
+                    }
                     return;
                 }
                 else if (!shopping)
                 { 
-                    itemManager.items[collisionMap.itemIndex].isActive = false;
-                    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                    gameMap.UpdateDamageUIInfo();
-                    playerDamageUps++;
+                    if (itemManager.items[collisionMap.itemIndex] != null)
+                    {
+                        itemManager.items[collisionMap.itemIndex].isActive = false;
+                        itemManager.items[collisionMap.itemIndex].position.x = 0;
+                        itemManager.items[collisionMap.itemIndex].position.y = 0;
+                        playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
+                        playerDamageUps++;
+                    }
+                        gameMap.UpdateDamageUIInfo();
                 }
             }
         }
 
-        public void SetPlayerPosition(int x, int y)
+        public void TriggerShop(string type)
         {
-            position.x = x;
-            position.y = y;
+            shopping = true;
+            shop.OpenShop(type);
+            playerInput = Console.ReadKey(true);
+            {
+                if (playerInput.Key == ConsoleKey.Q)
+                {
+                    shopping = false;
+                }
+                else if (playerInput.Key == ConsoleKey.E)
+                {
+                    shop.OpenShop(type);
+                }
+                Debug.WriteLine("Am I shopping? " + shopping);
+            }
         }
-
-        public void GoShopping()
-        {
-            gameMap.ShopMenu();
-            Debug.WriteLine("Am I shopping? " + shopping);
-        }
-
-        public void ExitShop()
-        { 
-        
-        }
-
-
-
         /// <summary>
         /// Input method, needs map to check for collision
         /// </summary>
         /// <param name="collisionMap"></param>
-        public void GetPlayerInput(Map collisionMap)
+        public void GetPlayerInput(Map collisionMap) // use this to break out of shop
         {
             int moveX;
             int moveY;
@@ -168,12 +185,8 @@ namespace TextRPG_OOP_
             }
             playerInput = Console.ReadKey(true);
             {
-                if (playerInput.Key == ConsoleKey.Q || playerInput.Key == ConsoleKey.E)
-                { 
-                
-                }
                 if (shopping) { return; }
-                if(playerInput.Key == ConsoleKey.W || playerInput.Key == ConsoleKey.UpArrow)
+                if(playerInput.Key == ConsoleKey.W || playerInput.Key == ConsoleKey.UpArrow && !shopping)
                 {
                     moveY = (position.y - 1);
                     if(moveY <= 0)
@@ -199,31 +212,6 @@ namespace TextRPG_OOP_
                     if(collisionMap.ItemInTarget(moveY, position.x) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
                         ItemCheck(collisionMap);
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    gameMap.UpdateHealthUIInfo();
-                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    gameMap.UpdateArmorUIInfo();
-                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //    gameMap.UpdateDamageUIInfo();
-                        //    playerDamage = playerDamageUps + 1;
-                        //}
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
                     {
@@ -240,7 +228,7 @@ namespace TextRPG_OOP_
                         }
                     }
                 }
-                if(playerInput.Key == ConsoleKey.S || playerInput.Key == ConsoleKey.DownArrow)
+                if(playerInput.Key == ConsoleKey.S || playerInput.Key == ConsoleKey.DownArrow && !shopping)
                 {
                     //Moves player down
                     moveY = (position.y + 1);
@@ -268,28 +256,6 @@ namespace TextRPG_OOP_
                     if(collisionMap.ItemInTarget(moveY, position.x) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
                         ItemCheck(collisionMap);
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //    playerDamage = playerDamageUps + 1;
-                        //}
                     }
                     if(collisionMap.CheckTile(moveY, position.x) == false)
                     {
@@ -306,7 +272,7 @@ namespace TextRPG_OOP_
                         }
                     }
                 }
-                if(playerInput.Key == ConsoleKey.A || playerInput.Key == ConsoleKey.LeftArrow)
+                if(playerInput.Key == ConsoleKey.A || playerInput.Key == ConsoleKey.LeftArrow && !shopping)
                 {
                     //Moves player left
                     moveX = (position.x - 1);
@@ -334,28 +300,6 @@ namespace TextRPG_OOP_
                     if(collisionMap.ItemInTarget(position.y, moveX) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
                         ItemCheck(collisionMap);
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //    playerDamage = playerDamageUps + 1;
-                        //}
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
                     {
@@ -372,7 +316,7 @@ namespace TextRPG_OOP_
                         }
                     }
                 }
-                if(playerInput.Key == ConsoleKey.D || playerInput.Key == ConsoleKey.RightArrow)
+                if(playerInput.Key == ConsoleKey.D || playerInput.Key == ConsoleKey.RightArrow && !shopping )
                 {
                     moveX = (position.x + 1);
                     if(moveX >= position.maxX)
@@ -399,27 +343,6 @@ namespace TextRPG_OOP_
                     if(collisionMap.ItemInTarget(position.y, moveX) && itemManager.items[collisionMap.itemIndex].isActive)
                     {
                         ItemCheck(collisionMap);
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Health Pickup" && healthSystem.health < PlayerMaxHP)
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.Heal(itemManager.items[collisionMap.itemIndex].gainAmount, PlayerMaxHP);
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Armor Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    healthSystem.armor += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //}
-                        //if(itemManager.items[collisionMap.itemIndex].itemType == "Damage Pickup")
-                        //{
-                        //    itemManager.items[collisionMap.itemIndex].isActive = false;
-                        //    itemManager.items[collisionMap.itemIndex].position.x = 0;
-                        //    itemManager.items[collisionMap.itemIndex].position.y = 0;
-                        //    playerDamageUps += itemManager.items[collisionMap.itemIndex].gainAmount;
-                        //    playerDamage = playerDamageUps + 1;
                         //}
                     }
                     if(collisionMap.CheckTile(position.y, moveX) == false)
@@ -460,12 +383,6 @@ namespace TextRPG_OOP_
                     Environment.Exit(0);
                 }
             }
-        }
-        /// <summary>
-        /// Used to increase player stats based on collions.
-        /// </summary>
-        void CheckPlayerWallet() // change to call to ShopManager 
-        {
         }
         /// <summary>
         /// Draws player to map.

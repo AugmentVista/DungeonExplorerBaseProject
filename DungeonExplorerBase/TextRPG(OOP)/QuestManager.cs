@@ -23,9 +23,7 @@ namespace TextRPG_OOP_
         }
         public void UpdateActiveQuest()
         {
-             
-                FirstQuest();
-            
+            FirstQuest();
         }
 
         public void SetPlayer(Player player)
