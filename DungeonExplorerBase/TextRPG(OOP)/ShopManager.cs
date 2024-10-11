@@ -98,7 +98,7 @@ namespace TextRPG_OOP_
                     else if (playerCoins >= costOfType * 2)
                     {
                         playerStatToIncrease = 2;
-                        playerCoins -= costOfType;
+                        playerCoins -= costOfType * 2;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
@@ -112,7 +112,7 @@ namespace TextRPG_OOP_
                     else if (playerCoins >= costOfType * 3)
                     {
                         playerStatToIncrease = 3;
-                        playerCoins -= costOfType;
+                        playerCoins -= costOfType * 3;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
@@ -126,7 +126,7 @@ namespace TextRPG_OOP_
                     else if (playerCoins >= costOfType * 5)
                     {
                         playerStatToIncrease = 5;
-                        playerCoins -= costOfType;
+                        playerCoins -= costOfType * 5;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
