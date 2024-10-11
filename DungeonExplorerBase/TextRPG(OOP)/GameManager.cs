@@ -146,7 +146,7 @@ namespace TextRPG_OOP_
 
         void Intro()
         {
-            Console.SetWindowSize(120,30);
+            Console.SetWindowSize(120,40);
             Debug.WriteLine("Into!");
             Console.WriteLine("Welcome to Dungeon Explorer!"); // placeholderTitle
             Console.WriteLine();

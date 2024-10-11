@@ -429,13 +429,13 @@ namespace TextRPG_OOP_
             {
                 path = path1;
                 floorMap = File.ReadAllLines(path);
-                if (QuestManager.questsCompleted < 3) { QuestManager.questsCompleted = 3; }
             }
             if(levelNumber == 2)
             {
                 levelNumber = 2;
                 path = path2;
                 floorMap = File.ReadAllLines(path);
+                if (QuestManager.questsCompleted < 3) { QuestManager.questsCompleted = 3; }
             }
             if(levelNumber == 3)
             {
@@ -675,22 +675,33 @@ namespace TextRPG_OOP_
                 Console.SetCursorPosition(mapX + 1, 12);
                 Console.Write(" Current market price: " + mainPlayer.shop.damageUpgradeCost);
         }
+        public void ClearConsoleLine(int line)
+        {
+            // Set the cursor to the beginning of the specified line
+            Console.SetCursorPosition(0, line);
 
+            // Clear the line by writing spaces
+            Console.Write(new string(' ', Console.WindowWidth));
+
+            // Reset cursor position back to the start of the line (optional)
+            Console.SetCursorPosition(0, line);
+        }
         /// <summary>
         /// Draws HUD under game map
         /// </summary>
         public void DrawHUD() //Add to a UIManager Class
         {
+            ClearConsoleLine(25);
             //Draws HUD.
             Console.SetCursorPosition(0,mapY + 1);
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine(" Current Quest: ");
             questManager.UpdateActiveQuest();
-            Console.WriteLine(questManager.activeQuest + "                   ");
+            Console.WriteLine(questManager.activeQuest + "       ");
             SetColorDefault();
-            string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
-            string FormatString = "HP: {0 } / {1 }  Damage: {2}  Armor: {3} Money: {4}   ";
+            string enemyHUDString = "{0} has Hp: {1} Armour: {2}     ";
+            string FormatString = "HP: {0 } / {1 }  Damage: {2}  Armour: {3} Money: {4}   ";
             Console.WriteLine(string.Format(FormatString, mainPlayer.playerHealth, Settings.playerMaxHP , mainPlayer.playerDamage, mainPlayer.playerArmour, mainPlayer.shop.playerCoins));
             if (mainPlayer.enemyHitName == "")
             {

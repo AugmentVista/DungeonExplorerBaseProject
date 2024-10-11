@@ -33,19 +33,19 @@ namespace TextRPG_OOP_
             switch (type)
             {
                 case "Armour":
-                    UpdateUpgradeCosts(type);
                     player.gameMap.UpdateArmorUIInfo(type);
                     costOfType = armourUpgradeCost;
+                    UpdateUpgradeCosts(type);
                     break;
                 case "Health":
-                    UpdateUpgradeCosts(type);
                     player.gameMap.UpdateHealthUIInfo(type);
                     costOfType = healthUpgradeCost;
+                    UpdateUpgradeCosts(type);
                     break;
                 case "Damage":
-                    UpdateUpgradeCosts(type);
                     player.gameMap.UpdateDamageUIInfo(type);
                     costOfType = damageUpgradeCost;
+                    UpdateUpgradeCosts(type);
                     break;
             }
             Console.Clear();
@@ -58,9 +58,9 @@ namespace TextRPG_OOP_
             Console.Clear();
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
             Console.WriteLine("You have " + playerCoins + " Money to spend ");
-            Console.WriteLine("Press V to purchase + 1 of " + type + " Cost: " + costOfType * 2 + "       ░░░░░");
-            Console.WriteLine("Press B to purchase + 2 of " + type + " Cost: " + costOfType * 3 + "       ░░░░░");
-            Console.WriteLine("Press N to purchase + 3 of " + type + " Cost: " + costOfType * 4 + "       ░░░░░");
+            Console.WriteLine("Press V to purchase + 1 of " + type + " Cost: " + costOfType  + "       ░░░░░");
+            Console.WriteLine("Press B to purchase + 2 of " + type + " Cost: " + costOfType * 2  + "       ░░░░░");
+            Console.WriteLine("Press N to purchase + 3 of " + type + " Cost: " + costOfType * 3  + "       ░░░░░");
             Console.WriteLine("Press M to purchase + 5 of " + type + " Cost: " + costOfType * 5 + "       ░░░░░");
             Console.WriteLine("Press Q to Exit the shop when you're finished ");
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
@@ -83,50 +83,50 @@ namespace TextRPG_OOP_
                     else if (playerCoins >= costOfType)
                     {
                         playerStatToIncrease = 1;
-                        playerCoins -= costOfType * playerStatToIncrease;
+                        playerCoins -= costOfType;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
 
                     }
                     break;
                 case ConsoleKey.B:
-                    if (playerCoins < costOfType)
+                    if (playerCoins < costOfType * 2)
                     {
                         Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
                         Console.ReadKey();
                         CloseShop();
                     }
-                    else if (playerCoins >= costOfType)
+                    else if (playerCoins >= costOfType * 2)
                     {
                         playerStatToIncrease = 2;
-                        playerCoins -= costOfType * playerStatToIncrease;
+                        playerCoins -= costOfType;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
                 case ConsoleKey.N:
-                    if (playerCoins < costOfType)
+                    if (playerCoins < costOfType * 3)
                     {
                         Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
                         Console.ReadKey();
                         CloseShop();
                     }
-                    else if (playerCoins >= costOfType)
+                    else if (playerCoins >= costOfType * 3)
                     {
                         playerStatToIncrease = 3;
-                        playerCoins -= costOfType * playerStatToIncrease;
+                        playerCoins -= costOfType;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
                 case ConsoleKey.M:
-                    if (playerCoins < costOfType)
+                    if (playerCoins < costOfType * 5 )
                     {
                         Console.WriteLine("Sorry, Link. I can't give credit. Come back when you're a little... mmmmm... richer!");
                         Console.ReadKey();
                         CloseShop();
                     }
-                    else if (playerCoins >= costOfType)
+                    else if (playerCoins >= costOfType * 5)
                     {
                         playerStatToIncrease = 5;
-                        playerCoins -= costOfType * playerStatToIncrease;
+                        playerCoins -= costOfType;
                         if (QuestManager.questsCompleted < 1) { QuestManager.questsCompleted = 1; }
                     }
                     break;
@@ -172,6 +172,7 @@ namespace TextRPG_OOP_
                     { 
                         Console.WriteLine("Cannot exceed damage limit of: " + Settings.playerMaxDamage); 
                     }
+
                     Console.ReadKey();
                     CloseShop();
                     break;
