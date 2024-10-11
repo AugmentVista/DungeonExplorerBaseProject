@@ -16,7 +16,7 @@ namespace TextRPG_OOP_
         public static bool Paused;
         public ConsoleKeyInfo shopInput;
 
-        public int playerCoins = 6;
+        public int playerCoins = 5;
         public int coinAmount = 0;
         private int upgradeCostMultiplier = 2;
         private int costOfType;
@@ -94,6 +94,12 @@ namespace TextRPG_OOP_
                     playerStatToIncrease = 5;
                     break;
                 case ConsoleKey.Q:
+                    playerStatToIncrease = 0;
+                    Console.Clear();
+                    CloseShop();
+                    break;
+                default:
+                    playerStatToIncrease = 0;
                     Console.Clear();
                     CloseShop();
                     break;
@@ -102,20 +108,25 @@ namespace TextRPG_OOP_
             switch (type)
             {
                 case "Armour":
-                    player.playerArmour += playerStatToIncrease;
+                    player.playerArmourUps += playerStatToIncrease;
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    Console.WriteLine("Cannot exceed armour limit of: " + Settings.playerMaxArmour);
                     Console.ReadKey();
                     CloseShop();
                     break;
                 case "Health":
-                    player.playerHealth += playerStatToIncrease;
+                    player.playerHealthUps += playerStatToIncrease;
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
                     Console.ReadKey();
                     CloseShop();
                     break;
                 case "Damage":
-                    player.playerDamage += playerStatToIncrease;
+                    player.playerDamageUps += playerStatToIncrease;
                     Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    if (player.playerDamage >= Settings.playerMaxDamage) 
+                    { 
+                        Console.WriteLine("Cannot exceed damage limit of: " + Settings.playerMaxDamage); 
+                    }
                     Console.ReadKey();
                     CloseShop();
                     break;

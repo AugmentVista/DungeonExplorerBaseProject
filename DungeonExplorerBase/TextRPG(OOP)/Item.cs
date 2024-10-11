@@ -27,13 +27,13 @@ namespace TextRPG_OOP_
             {
                 item = ((char)3);
                 color = ConsoleColor.Red;
-                gainAmount = map.levelNumber;
+                gainAmount = Settings.playerMaxHP / 4;
             }
             if(itemType == "Damage Pickup")
             {
                 item = ((char)164);
                 color = ConsoleColor.DarkYellow;
-                gainAmount = 1;
+                gainAmount = 0;
             }
             if(itemType == "Armor Pickup")
             {

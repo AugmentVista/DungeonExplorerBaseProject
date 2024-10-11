@@ -667,13 +667,10 @@ namespace TextRPG_OOP_
             {
                 Console.WriteLine();
             }
-            else if (mainPlayer.shopping)
-            {
-                Console.SetCursorPosition(0, mapY + 2);
-            }
             else
             {
                 Console.WriteLine(string.Format(enemyHUDString, mainPlayer.enemyHitName, mainPlayer.enemyHitHealth, mainPlayer.enemyHitArmor));
+                Console.WriteLine(mainPlayer.name + " Dealt: " + mainPlayer.playerDamage + " damage");
             }
         }
     }

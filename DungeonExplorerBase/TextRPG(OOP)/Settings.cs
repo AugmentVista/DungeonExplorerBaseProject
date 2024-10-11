@@ -25,7 +25,7 @@ namespace TextRPG_OOP_
         /// Player stats are static as there is only ever one player
         /// </summary>
         public static int playerMaxHP = 10;
-        public static int playerMaxArmour = 10;
+        public static int playerMaxArmour = 5;
         public static int playerMaxDamage = 10;
     }
 }

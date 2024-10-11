@@ -23,7 +23,7 @@ namespace TextRPG_OOP_
         public void SetEnemyStats()
         {
             healthSystem.health = BaseHP + levelNumber;
-            healthSystem.armor = 0;
+            healthSystem.armour = 0;
             enemyDamage = BaseDamage;
         }
     }

@@ -40,8 +40,9 @@ namespace TextRPG_OOP_
         /// <param name="Damage"></param>
         public void TakeDamage(int Damage) //Damage taking system.
         {
-            if (Damage / armour <= 1) { Damage = 1; }
-            health -= Damage / armour;
+            if (Damage - armour <= 1) { Damage = 1; }
+            Damage -= armour;
+            health -= Damage;
             if(health <= 0 )
             {
                 health = 0;

@@ -24,7 +24,7 @@ namespace TextRPG_OOP_
         public void SetEnemyStats()
         {
             healthSystem.health = 3 + levelNumber;
-            healthSystem.armor = levelNumber - 1;
+            healthSystem.armour = levelNumber - 1;
             enemyDamage = levelNumber;
         }
     }
