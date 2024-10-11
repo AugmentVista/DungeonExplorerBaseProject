@@ -18,7 +18,14 @@ namespace TextRPG_OOP_
         public int ConstructBaseDamage = 0;
         public int GoblinFolkBaseHP = 3;
         public int GoblinFolkBaseDamage = 0;
-        public int playerMaxHP = 10;
-        public int PlayerBaseDamage = 1;
+
+
+
+        /// <summary>
+        /// Player stats are static as there is only ever one player
+        /// </summary>
+        public static int playerMaxHP = 10;
+        public static int playerMaxArmour = 10;
+        public static int playerMaxDamage = 10;
     }
 }

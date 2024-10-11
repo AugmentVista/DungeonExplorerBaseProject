@@ -14,12 +14,12 @@ namespace TextRPG_OOP_
     internal class HealthSystem
     {
         public int health;
-        public int armor;
+        public int armour;
         public bool IsAlive;
         public HealthSystem() //Constructor
         {
             IsAlive = true;
-            armor = 0;
+            armour = 0;
         }
         /// <summary>
         /// heals player for HpGain value, max health needed for clamping
@@ -40,18 +40,12 @@ namespace TextRPG_OOP_
         /// <param name="Damage"></param>
         public void TakeDamage(int Damage) //Damage taking system.
         {
-            if(Damage - armor <= 0)
+            if (Damage / armour <= 1) { Damage = 1; }
+            health -= Damage / armour;
+            if(health <= 0 )
             {
-                Debug.WriteLine("Armor is too hard to damage");
-            }
-            else
-            {
-                health -= Damage - armor;
-                if(health <= 0 )
-                {
-                    health = 0;
-                    IsAlive = false;
-                }
+                health = 0;
+                IsAlive = false;
             }
         }
         /// <summary>
@@ -74,9 +68,14 @@ namespace TextRPG_OOP_
         /// Ups armor stat bt passed in value
         /// </summary>
         /// <param name="armorUp"></param>
-        public void IncreseArmor(int armorUp) //Increses Armor
+        public void IncreaseArmour(int armorUp) //Increses Armor
         {
-            armor += armorUp;
+            armour += armorUp;
+        }
+
+        public int GetArmour() //returns current armour.
+        {
+            return armour;
         }
     }
 }

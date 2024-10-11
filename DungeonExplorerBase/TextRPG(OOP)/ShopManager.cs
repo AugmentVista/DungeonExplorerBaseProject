@@ -13,11 +13,13 @@ namespace TextRPG_OOP_
     {
         EnemyManager enemyManager;
         Player player;
+        public static bool Paused;
         public ConsoleKeyInfo shopInput;
 
-        public int playerCoins = 0;
+        public int playerCoins = 6;
         public int coinAmount = 0;
         private int upgradeCostMultiplier = 2;
+        private int costOfType;
 
         public int armourUpgradeCost;
         public int healthUpgradeCost;
@@ -27,8 +29,30 @@ namespace TextRPG_OOP_
         public int healthUpgradesTaken = 0;
         public int damageUpgradesTaken = 0;
 
+        public int playerStatToIncrease = 0;
+
         public void OpenShop(string type)
         {
+            Paused = true;
+            switch (type)
+            {
+                case "Armour":
+                    UpdateUpgradeCosts("Armour", 1);
+                    costOfType = armourUpgradeCost;
+                    Console.WriteLine();
+                    break;
+                case "Health":
+                    UpdateUpgradeCosts("Health", 1);
+                    costOfType = healthUpgradeCost;
+                    Console.WriteLine();
+                    break;
+                case "Damage":
+                    UpdateUpgradeCosts("Damage", 1);
+                    costOfType = damageUpgradesTaken;
+                    Console.WriteLine();
+                    break;
+            }
+
             Console.Clear();
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
             Console.WriteLine("░░░░░" + " You've Entered the Shop! " + "          ░░░░░"); // 25 char + 15 char
@@ -38,67 +62,72 @@ namespace TextRPG_OOP_
             Console.ReadKey(true);
             Console.Clear();
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-            Console.WriteLine("Press V for level 1 upgrade +1 to " + type + " Cost: 5 money" + "          ░░░░░");
-            Console.WriteLine("Press B for level 2 upgrade +2 to " + type + " Cost: 9 money" + "          ░░░░░");
-            Console.WriteLine("Press N for level 3 upgrade +3 to " + type + " Cost: 13 money" + "         ░░░░░");
-            Console.WriteLine("Press M for level 10 upgrade +10 to " + type + " Cost: 40 money" + "       ░░░░░");
+            Console.WriteLine("You have " + playerCoins + " Money to spend ");
+            Console.WriteLine("Press V to purchase + 1 of " + type + " Cost: " + costOfType * 1 + "       ░░░░░");
+            Console.WriteLine("Press B to purchase + 2 of " + type + " Cost: " + costOfType * 2 + "       ░░░░░");
+            Console.WriteLine("Press N to purchase + 3 of " + type + " Cost: " + costOfType * 3 + "       ░░░░░");
+            Console.WriteLine("Press M to purchase + 5 of " + type + " Cost: " + costOfType * 5 + "       ░░░░░");
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine("You may purchase the same upgrade more than once!");
-            Console.WriteLine("░░░░░          ░░░░░");
-            Console.WriteLine("░░░░░          ░░░░░");
             Console.WriteLine("Press Q to Exit the shop when you're finished ");
             Console.WriteLine("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-            Console.ReadKey(true);
             PurchaseUpgrades(type);
         }
 
-        public void PurchaseUpgrades(string Type)
+        public void PurchaseUpgrades(string type)
         {
             shopInput = Console.ReadKey(true);
-            if (shopInput.Key == ConsoleKey.V && playerCoins > damageUpgradeCost)
+
+
+            switch (shopInput.Key)
             {
-                player.playerDamageUps += 1;
+                case ConsoleKey.V:
+                    playerStatToIncrease = 1;
+                    break;
+                case ConsoleKey.B:
+                    playerStatToIncrease = 2;
+                    break;
+                case ConsoleKey.N:
+                    playerStatToIncrease = 3;
+                    break;
+                case ConsoleKey.M:
+                    playerStatToIncrease = 5;
+                    break;
+                case ConsoleKey.Q:
+                    Console.Clear();
+                    CloseShop();
+                    break;
             }
 
-            if (shopInput.Key == ConsoleKey.B && playerCoins > damageUpgradeCost)
+            switch (type)
             {
-                player.playerDamageUps += 2;
-            }
-
-            if (shopInput.Key == ConsoleKey.N && playerCoins > damageUpgradeCost)
-            {
-                player.playerDamageUps += 3;
-            }
-
-            if (shopInput.Key == ConsoleKey.M && playerCoins > damageUpgradeCost)
-            {
-                player.playerDamageUps += 10;
-            }
-
-            else if (shopInput.Key == ConsoleKey.Q)
-            {
-                CloseShop();
-            }
-            else
-            { 
-                CloseShop();
+                case "Armour":
+                    player.playerArmour += playerStatToIncrease;
+                    Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    Console.ReadKey();
+                    CloseShop();
+                    break;
+                case "Health":
+                    player.playerHealth += playerStatToIncrease;
+                    Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    Console.ReadKey();
+                    CloseShop();
+                    break;
+                case "Damage":
+                    player.playerDamage += playerStatToIncrease;
+                    Console.WriteLine("You have purchased " + playerStatToIncrease + " " + type);
+                    Console.ReadKey();
+                    CloseShop();
+                    break;
             }
         }
 
         public void CloseShop() 
-        { 
-            player.shopping = false; 
-            player.gameMap.Draw();
-            player.gameMap.DrawEnemyLegend();
-            player.gameMap.DrawItemLegend();
-            player.Draw();
-            player.itemManager.Draw();
-            player.Update(); 
-
+        {
+            Console.Clear();
+            player.shopping = false;
+            Paused = false;
         }
-
-        
         
         public void SetPlayer(Player player) 
         {
@@ -129,23 +158,22 @@ namespace TextRPG_OOP_
             Debug.WriteLine(playerCoins);
         }
 
-
-        public void UpdateUpgradeCosts(string upgradeType)
+        public void UpdateUpgradeCosts(string upgradeType, int amountPurchased)
         {
             // as stock goes down price should go up
             if (upgradeType == "Armor")
             {
-                armourUpgradesTaken++;
+                armourUpgradesTaken += amountPurchased;
                 armourUpgradeCost = armourUpgradesTaken * upgradeCostMultiplier;
             }
             if (upgradeType == "Health")
             { 
-                healthUpgradesTaken++;
+                healthUpgradesTaken += amountPurchased;
                 healthUpgradeCost = healthUpgradesTaken * upgradeCostMultiplier;
             }
             if (upgradeType == "Damage")
             {
-                damageUpgradesTaken++;
+                damageUpgradesTaken += amountPurchased;
                 damageUpgradeCost = damageUpgradesTaken * upgradeCostMultiplier;
             }
         }

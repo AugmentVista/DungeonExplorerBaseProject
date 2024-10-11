@@ -33,7 +33,7 @@ namespace TextRPG_OOP_
             questManager = new QuestManager();
             gameMap = new Map(itemManager, questManager);
             enemyManager = new EnemyManager(gameMap, settings, shop);
-            mainPlayer = new Player(gameMap,itemManager, settings, shop, questManager);
+            mainPlayer = new Player(gameMap,itemManager, shop, questManager);
         } 
         /// <summary>
         /// Calls Start methods for all things needed in the game.
@@ -65,7 +65,7 @@ namespace TextRPG_OOP_
                 Console.Clear();
                 Console.WriteLine("You Won!, I didn't think you'd do it, well done ");
                 Console.WriteLine();
-                Console.WriteLine(string.Format(FormatString,mainPlayer.playerDamageUps,mainPlayer.healthSystem.armor,mainPlayer.healthSystem.health));
+                Console.WriteLine(string.Format(FormatString,mainPlayer.playerDamageUps,mainPlayer.healthSystem.armour,mainPlayer.healthSystem.health));
                 Console.WriteLine();
                 Console.WriteLine("Congratulations");
                 Thread.Sleep(3000);
@@ -99,7 +99,7 @@ namespace TextRPG_OOP_
                 itemManager.Draw();
                 enemyManager.Update();
                 enemyManager.Draw();
-                shop.Update();
+                shop.Update(); // empty
             }
             EndGame();
         }
@@ -123,10 +123,25 @@ namespace TextRPG_OOP_
             {
                 mainPlayer.gameIsOver = true;
             }
+            CheckPauseState(ShopManager.Paused);
         }
         /// <summary>
         /// Runs game intro
         /// </summary>
+        /// 
+        public static void CheckPauseState(bool isPaused)
+        {
+            while (isPaused)
+            {
+                // do somethin
+
+                if (!isPaused)
+                {
+                    continue;
+                }
+            }
+        }
+
         void Intro()
         {
             Console.SetWindowSize(120,30);

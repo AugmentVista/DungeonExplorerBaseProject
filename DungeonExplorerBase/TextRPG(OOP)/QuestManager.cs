@@ -11,7 +11,7 @@ namespace TextRPG_OOP_
         Player player;
         Map map;
 
-        public List<string> questsOrder;
+        public List<string> questsOrder; // change to queue
 
         public string firstQuestDetails;
         public string secondQuestDetails;
@@ -24,6 +24,9 @@ namespace TextRPG_OOP_
         public void UpdateActiveQuest()
         {
             FirstQuest();
+
+            // if firstquest completed 
+            // switch (newquest)
         }
 
         public void SetPlayer(Player player)

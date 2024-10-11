@@ -85,24 +85,21 @@ namespace TextRPG_OOP_
             {
                 if(items[i].position.x == player.position.x && items[i].position.y == player.position.y)
                 {
-                    // call to shopManager to check if player can afford item
-                    if (items[i].itemType == "Damage Pickup") 
+                    if (items[i].itemType == "Damage Pickup" && player.playerDamage < Settings.playerMaxDamage) 
                     {
                         player.playerDamageUps += items[i].gainAmount;
                         gameMap.damageUpgradeCount++;
-                        items[i].isActive = false;    
+                        items[i].isActive = false;
                     }
-                    // call to shopManager to check if player can afford item
-                    if (items[i].itemType == "Health Pickup" && player.healthSystem.health != player.PlayerMaxHP)
+                    if (items[i].itemType == "Health Pickup" && player.healthSystem.health < Settings.playerMaxHP)
                     {
                         player.healthSystem.health += items[i].gainAmount;
                         gameMap.healthUpgradeCount++;
                         items[i].isActive = false;  
                     }
-                    // call to shopManager to check if player can afford item
-                    if (items[i].itemType == "Armor Pickup") 
+                    if (items[i].itemType == "Armor Pickup" && player.playerArmour < Settings.playerMaxArmour) 
                     {
-                        player.healthSystem.armor += items[i].gainAmount;
+                        player.healthSystem.armour += items[i].gainAmount;
                         gameMap.armourUpgradeCount++;
                         items[i].isActive = false;  
                     }

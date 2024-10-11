@@ -48,9 +48,9 @@ namespace TextRPG_OOP_
         public int index;
         public int itemIndex;
 
-        public int damageUpgradeCount = 0;
-        public int healthUpgradeCount = 0;
-        public int armourUpgradeCount = 0;
+        public int damageUpgradeCount;
+        public int healthUpgradeCount ;
+        public int armourUpgradeCount;
 
         public EnemyManager enemyManager;
         public Player mainPlayer;
@@ -82,7 +82,10 @@ namespace TextRPG_OOP_
             MakeDungeonMap();
             index = 0;
             itemIndex = 0;
-        }
+            ///damageUpgradeCount = mainPlayer.
+            ///healthUpgradeCount
+           ///armourUpgradeCount
+    }
         /// <summary>
         /// Sets player and Enemy manager from call in gameManager.
         /// </summary>
@@ -615,7 +618,7 @@ namespace TextRPG_OOP_
             Console.Write(armorPickup);
             Console.Write(" = Armor Item Shop");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Armor");
+            mainPlayer.shop.UpdateUpgradeCosts("Armor", 0);
 
             int newUpgradeCost = mainPlayer.shop.armourUpgradeCost;
 
@@ -629,7 +632,7 @@ namespace TextRPG_OOP_
             Console.Write(healthPickup);
             Console.Write(" Health Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Health");
+            mainPlayer.shop.UpdateUpgradeCosts("Health", 0);
             int newUpgradeCost = mainPlayer.shop.healthUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 10);
@@ -642,7 +645,7 @@ namespace TextRPG_OOP_
             Console.Write(damagePickup);
             Console.Write(" Damage Item Shop ");
 
-            mainPlayer.shop.UpdateUpgradeCosts("Damage");
+            mainPlayer.shop.UpdateUpgradeCosts("Damage", 0);
             int newUpgradeCost = mainPlayer.shop.damageUpgradeCost;
 
             Console.SetCursorPosition(mapX + 1, 12);
@@ -658,8 +661,8 @@ namespace TextRPG_OOP_
             Console.SetCursorPosition(0,mapY + 1);
 
             string enemyHUDString = "{0} has Hp: {1} Armor: {2}     ";
-            string FormatString = "HP: {0}  Damage: {1}  Armor: {2} Money: {3}   ";
-            Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, mainPlayer.playerDamage, mainPlayer.healthSystem.armor, mainPlayer.shop.playerCoins));
+            string FormatString = "HP: {0 } / {1 }  Damage: {2}  Armor: {3} Money: {4}   ";
+            Console.WriteLine(string.Format(FormatString, mainPlayer.healthSystem.health, Settings.playerMaxHP , mainPlayer.playerDamage, mainPlayer.healthSystem.armour, mainPlayer.shop.playerCoins));
             if (mainPlayer.enemyHitName == "")
             {
                 Console.WriteLine();
@@ -667,8 +670,6 @@ namespace TextRPG_OOP_
             else if (mainPlayer.shopping)
             {
                 Console.SetCursorPosition(0, mapY + 2);
-                Console.WriteLine("You have stepped on a shop");
-                Console.WriteLine("Press E to enter the shop or Q to skip the shop");
             }
             else
             {
