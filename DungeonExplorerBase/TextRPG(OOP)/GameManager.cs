@@ -20,13 +20,13 @@ namespace TextRPG_OOP_
         public Settings settings;
         public ShopManager shop;
         public QuestManager questManager;
+        public static bool hasSaveFile = false;
         /// <summary>
         /// Gets all references so game is ready to start up
         /// </summary>
         private void StartUp()
         {
             Console.CursorVisible = false;
-            Debug.WriteLine("Setting Up characters");
             settings = new Settings();
             itemManager = new ItemManager();
             shop = new ShopManager();
@@ -49,7 +49,6 @@ namespace TextRPG_OOP_
             itemManager.Draw();
             mainPlayer.Draw();
             enemyManager.Draw();
-            
         }
         /// <summary>
         /// Handels game ending, for both win and loss.
@@ -101,20 +100,100 @@ namespace TextRPG_OOP_
                 itemManager.Draw();
                 enemyManager.Update();
                 enemyManager.Draw();
+                mainPlayer.SavePlayer();
+                shop.SaveShop();
             }
             EndGame();
         }
         /// <summary>
         /// Is the way to start the game
         /// </summary>
+        /// 
+
+        public void CheckForSaveState()
+        {
+            ConsoleKeyInfo playerInput = Console.ReadKey(true);
+
+            if (playerInput.Key == ConsoleKey.L)
+            {
+                try
+                {
+                    SetUpGame();
+                    Settings.LoadStaticSettings();
+                    Settings.LoadSettings(); // Assuming this might throw
+                    Player.LoadPlayer();     // Assuming this might throw
+                    ShopManager.LoadShop();  // Assuming this might throw
+                    hasSaveFile = true;
+                    DungeonGameLoop();
+                }
+                catch (System.IO.FileNotFoundException ex)
+                {
+                    // Handle the case where a file is not found
+                    Console.Clear();
+                    Console.WriteLine("Save file not found: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame(); // This method starts a new game
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    // Handle JSON-related exceptions, such as malformed JSON
+                    Console.Clear();
+                    Console.WriteLine("Error loading game data: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame(); // This method starts a new game
+                }
+                catch (Exception ex)
+                {
+                    // Catch any other unexpected exceptions
+                    Console.Clear();
+                    Console.WriteLine("An unexpected error occurred: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame(); // This method starts a new game
+                }
+            }
+            else if (playerInput.Key == ConsoleKey.N)
+            {
+                SetUpGame();
+                Settings.SaveStaticSettings(settings);
+                settings.SaveSettings();
+                mainPlayer.SavePlayer();
+                hasSaveFile = false;
+                shop.SaveShop();
+                DungeonGameLoop();
+            }
+            else if (playerInput.Key != ConsoleKey.L && playerInput.Key != ConsoleKey.N)
+            {
+                PlayGame();
+            }
+        }
+
+        private void StartNewGame()
+        {
+            Console.WriteLine("No save file found on record, beginning new game");
+            Thread.Sleep(10000);
+            SetUpGame();
+            Settings.SaveStaticSettings(settings);
+            settings.SaveSettings();
+            mainPlayer.SavePlayer();
+            shop.SaveShop();
+            hasSaveFile = false;
+            DungeonGameLoop();
+        }
+
         public void PlayGame()
         {
             Debug.WriteLine("Starting Game");
             StartUp();
             Intro();
-            SetUpGame();
             QuestManager.questsCompleted = 0;
-            DungeonGameLoop();
+            Console.WriteLine("Hit L to load your last save file");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Hit N to begin a New game.");
+            Console.WriteLine();
+            Console.WriteLine();
+
+            CheckForSaveState();
         }
         /// <summary>
         /// Checks if player is dead
@@ -165,9 +244,8 @@ namespace TextRPG_OOP_
             Console.Write(" to upgrade your armour ");
             Console.WriteLine();
             Console.Write("Commit assault against the creatures of this dungeon for cash");
-            Console.WriteLine(" Use that cash to improve yourself");
             Console.WriteLine();
-            Console.WriteLine("Press any key to get started!");
+            Console.WriteLine("Spend that cash to improve yourself");
             Console.ReadKey(true);
             Console.Clear();
         }

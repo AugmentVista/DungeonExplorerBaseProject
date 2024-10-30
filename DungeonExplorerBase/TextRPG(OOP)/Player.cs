@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Runtime;
+using System.IO;
+using System.Text.Json;
 
 namespace TextRPG_OOP_
 {
@@ -20,15 +17,13 @@ namespace TextRPG_OOP_
         public Map gameMap;
 
         public ConsoleKeyInfo playerInput;
-        public int playerDamage;
-        public int playerArmour;
-        public int playerHealth;
-
-        public int playerArmourUps = 1;
-        public int playerHealthUps;
-        public int playerDamageUps = 1;
-        public int startingHealth = 20;
-
+        public int playerDamage { get; set; }
+        public int playerArmour { get; set; }
+        public int playerHealth { get; set; }
+        public int playerArmourUps { get; set; } = 1;
+        public int playerHealthUps { get; set; }
+        public int playerDamageUps { get; set; } = 1;
+        public int startingHealth { get; set; } = 20;
         public int enemyHitHealth;
         public int enemyHitArmor;
 
@@ -36,9 +31,11 @@ namespace TextRPG_OOP_
         public bool gameWon;
         public bool shopping;
 
+        public string name { get; set; }
+
         public string enemyHitName;
 
-        public char avatar;
+        private char avatar;
 
         public Player(Map map, ItemManager IM, ShopManager shop, QuestManager quest)
         {
@@ -47,12 +44,6 @@ namespace TextRPG_OOP_
             gameIsOver = false;
             gameWon = false;
 
-            healthSystem.health = startingHealth;
-            playerDamage = playerDamageUps;
-            playerHealth = healthSystem.GetHealth();
-            playerArmour = playerArmourUps;
-
-            name = "Player";
             enemyHitName = ""; // clears enemy hit for starting
             gameMap = map; // hands map to player
             itemManager = IM; // hands item manager to player
@@ -61,11 +52,37 @@ namespace TextRPG_OOP_
             this.quest = quest;
             quest.SetPlayer(this);
         }
-
-
         public void Start()
         {
             SetMaxPlayerPosition(gameMap);
+            DefaultPlayerStats();
+        }
+
+        public void DefaultPlayerStats()
+        {
+            if (!GameManager.hasSaveFile)
+            { 
+                healthSystem.health = startingHealth;
+                playerDamage = playerDamageUps;
+                playerHealth = healthSystem.GetHealth();
+                playerArmour = playerArmourUps;
+                name = "Player";
+            }
+        }
+
+        public void SavePlayer()
+        {
+            string filePath = "playerdata.json";
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(filePath, json);
+        }
+
+        public static Player LoadPlayer()
+        {
+            string filePath = "playerdata.json";
+            var json = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<Player>(json);
         }
 
 
@@ -82,13 +99,13 @@ namespace TextRPG_OOP_
             }
         }
 
-
         private void CapPlayerStats()
         {
             if (playerHealth > Settings.playerMaxHP) { playerHealth = Settings.playerMaxHP; }
             if (playerArmour > Settings.playerMaxArmour) { playerArmour = Settings.playerMaxArmour; }
             if (playerDamage > Settings.playerMaxDamage) { playerDamage = Settings.playerMaxDamage; }
         }
+
         public void SetMaxPlayerPosition(Map map)
         {
             int mapX;
@@ -99,13 +116,11 @@ namespace TextRPG_OOP_
             position.maxY = mapY - 1;
         }
 
-
         public void SetPlayerPosition(int x, int y)
         {
             position.x = x;
             position.y = y;
         }
-
 
         public void ItemCheck(Map collisionMap)
         {
@@ -141,7 +156,6 @@ namespace TextRPG_OOP_
             }
         }
 
-
         public void Draw()
         {
             // used to draw the player
@@ -152,13 +166,11 @@ namespace TextRPG_OOP_
             gameMap.SetColorDefault();
         }
 
-
         public void TriggerShop(string type)
         {
             shopping = true;
             shop.OpenShop(type);
         }
-
 
         public void GetPlayerInput(Map collisionMap)
         {
@@ -373,6 +385,5 @@ namespace TextRPG_OOP_
                 }
                 }
             }
-            
         }
     }

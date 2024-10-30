@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
 
 namespace TextRPG_OOP_
 {
@@ -16,16 +14,34 @@ namespace TextRPG_OOP_
         public static bool Paused;
         public ConsoleKeyInfo shopInput;
 
-        public int playerCoins = 10;
-        public int coinAmount = 0;
-        private int costOfType;
-        public int deadguys = 0;
+        public int playerCoins { get; set; } = 10;
+        public int coinAmount { get; set; } = 0;
+        private int costOfType { get; set; }
+        public int deadguys { get; set; } = 0;
 
-        public int armourUpgradeCost = 3;
-        public int healthUpgradeCost = 1;
-        public int damageUpgradeCost = 2;
+        public int armourUpgradeCost { get; set; } = 3;
+        public int healthUpgradeCost { get; set; } = 1;
+        public int damageUpgradeCost { get; set; } = 2;
 
-        public int playerStatToIncrease = 0;
+        public int playerStatToIncrease { get; set; } = 0;
+
+
+        public void SaveShop()
+        {
+            string filePath = "shopdata.json";
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(filePath, json);
+        }
+
+        public static ShopManager LoadShop()
+        {
+            string filePath = "shopdata.json";
+            var json = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<ShopManager>(json);
+        }
+
+
 
         public void OpenShop(string type)
         {
