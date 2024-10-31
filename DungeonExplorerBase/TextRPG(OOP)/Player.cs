@@ -37,6 +37,9 @@ namespace TextRPG_OOP_
 
         private char avatar;
 
+        public Player() // empty constructor for json
+        { }
+
         public Player(Map map, ItemManager IM, ShopManager shop, QuestManager quest)
         {
             avatar = ((char)2); // Sets player to smiley face.
@@ -56,18 +59,16 @@ namespace TextRPG_OOP_
         {
             SetMaxPlayerPosition(gameMap);
             DefaultPlayerStats();
+            if (GameManager.hasSaveFile) { LoadPlayer(); }
         }
 
         public void DefaultPlayerStats()
         {
-            if (!GameManager.hasSaveFile)
-            { 
-                healthSystem.health = startingHealth;
-                playerDamage = playerDamageUps;
-                playerHealth = healthSystem.GetHealth();
-                playerArmour = playerArmourUps;
-                name = "Player";
-            }
+            healthSystem.health = startingHealth;
+            playerDamage = playerDamageUps;
+            playerHealth = healthSystem.GetHealth();
+            playerArmour = playerArmourUps;
+            name = "Player";
         }
 
         public void SavePlayer()

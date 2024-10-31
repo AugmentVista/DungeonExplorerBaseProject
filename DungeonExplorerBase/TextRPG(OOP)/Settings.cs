@@ -11,6 +11,10 @@ namespace TextRPG_OOP_
     internal class Settings
     {
         // Base values for all stats. 
+
+        public Settings() { }
+
+
         public int PlasmoidBaseHP { get; set; } = 3;
         public int PlasmoidBaseDamage { get; set; } = 0;
         public int ConstructBaseHP { get; set; } = 3;
@@ -23,12 +27,12 @@ namespace TextRPG_OOP_
         /// </summary>
 
         // Configuration properties
-        public int playerMaxHPConfig { get; set; } = 25;
+        public int playerMaxHPConfig { get; set; } = 20;
         public int playerMaxArmourConfig { get; set; } = 5;
         public int playerMaxDmgConfig { get; set; } = 10;
 
         // Static properties
-        public static int playerMaxHP { get; set; } = 25;
+        public static int playerMaxHP { get; set; } = 20;
         public static int playerMaxArmour { get; set; } = 5;
         public static int playerMaxDamage { get; set; } = 10;
 
@@ -41,13 +45,13 @@ namespace TextRPG_OOP_
 
         public void SaveSettings()
         {
+            SaveStaticSettings(this); // Pass the current instance
             string filePath = "settingsdata.json";
             var options = new JsonSerializerOptions { WriteIndented = true };
             var json = JsonSerializer.Serialize(this, options);
             File.WriteAllText(filePath, json);
 
             // Save static settings as well
-            SaveStaticSettings(this); // Pass the current instance
         }
 
         public static void SaveStaticSettings(Settings settingsInstance)
@@ -81,10 +85,10 @@ namespace TextRPG_OOP_
 
         public static Settings LoadSettings()
         {
+            LoadStaticSettings();
             string filePath = "settingsdata.json";
             var json = File.ReadAllText(filePath);
             var settings = JsonSerializer.Deserialize<Settings>(json);
-            LoadStaticSettings();
 
             return settings; // Return the deserialized settings object
         }

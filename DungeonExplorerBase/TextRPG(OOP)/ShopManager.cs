@@ -9,6 +9,11 @@ namespace TextRPG_OOP_
 {
     internal class ShopManager
     {
+
+        public ShopManager() { }
+
+
+
         EnemyManager enemyManager;
         Player player;
         public static bool Paused;
