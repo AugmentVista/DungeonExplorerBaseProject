@@ -9,11 +9,6 @@ namespace TextRPG_OOP_
 {
     internal class ShopManager
     {
-
-        public ShopManager() { }
-
-
-
         EnemyManager enemyManager;
         Player player;
         public static bool Paused;
@@ -30,6 +25,23 @@ namespace TextRPG_OOP_
 
         public int playerStatToIncrease { get; set; } = 0;
 
+        public ShopManager()
+        {
+           
+        }
+
+        public void Start()
+        {
+            if (GameManager.hasSaveFile)
+            {
+                LoadShop();
+            }
+            else if (!GameManager.hasSaveFile) 
+            {
+                playerCoins = playerCoins * 2;
+                    
+            }
+        }
 
         public void SaveShop()
         {

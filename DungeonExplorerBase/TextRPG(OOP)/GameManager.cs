@@ -18,112 +18,6 @@ namespace TextRPG_OOP_
         public QuestManager questManager;
         public static bool hasSaveFile = false;
 
-        /// <summary>
-        /// Gets all references so game is ready to start up
-        /// </summary>
-        /// 
-        private void StartUp()
-        {
-            Console.CursorVisible = false;
-            settings = new Settings();
-            itemManager = new ItemManager();
-            shop = new ShopManager();
-            questManager = new QuestManager();
-            gameMap = new Map(itemManager, questManager);
-            enemyManager = new EnemyManager(gameMap, settings, shop);
-            mainPlayer = new Player(gameMap,itemManager, shop, questManager);
-        }
-
-        public void CheckForSaveState()
-        {
-            ConsoleKeyInfo playerInput = Console.ReadKey(true);
-
-            if (playerInput.Key == ConsoleKey.L)
-            {
-                try
-                {
-                    SetUpGame();
-                    Settings.LoadStaticSettings();
-                    Settings.LoadSettings(); // Assuming this might throw
-                    Player.LoadPlayer();     // Assuming this might throw
-                    ShopManager.LoadShop();  // Assuming this might throw
-                    hasSaveFile = true;
-                    Debug.WriteLine(hasSaveFile);
-                    DungeonGameLoop();
-                }
-                catch (System.IO.FileNotFoundException ex)
-                {
-                    // Handle the case where a file is not found
-                    Console.Clear();
-                    Console.WriteLine("Save file not found: " + ex.Message);
-                    hasSaveFile = false;
-                    StartNewGame(); // This method starts a new game
-                }
-                catch (System.Text.Json.JsonException ex)
-                {
-                    // Handle JSON-related exceptions, such as malformed JSON
-                    Console.Clear();
-                    Console.WriteLine("Error loading game data: " + ex.Message);
-                    hasSaveFile = false;
-                    StartNewGame(); // This method starts a new game
-                }
-                catch (Exception ex)
-                {
-                    // Catch any other unexpected exceptions
-                    Console.Clear();
-                    Console.WriteLine("An unexpected error occurred: " + ex.Message);
-                    hasSaveFile = false;
-                    StartNewGame(); // This method starts a new game
-                }
-            }
-            else if (playerInput.Key == ConsoleKey.N)
-            {
-                SetUpGame();
-                Settings.SaveStaticSettings(settings);
-                settings.SaveSettings();
-                mainPlayer.SavePlayer();
-                hasSaveFile = false;
-                shop.SaveShop();
-                DungeonGameLoop();
-            }
-            else if (playerInput.Key != ConsoleKey.L && playerInput.Key != ConsoleKey.N)
-            {
-                StartNewGame();
-            }
-        }
-       
-        
-
-        private void StartNewGame()
-        {
-            Console.WriteLine("No save file found on record, beginning new game");
-            Thread.Sleep(2000);
-            SetUpGame();
-            Settings.SaveStaticSettings(settings);
-            settings.SaveSettings();
-            mainPlayer.SavePlayer();
-            shop.SaveShop();
-            hasSaveFile = false;
-            DungeonGameLoop();
-        }
-
-        /// <summary>
-        /// Calls Start methods for all things needed in the game.
-        /// </summary>
-        /// 
-        private void SetUpGame()
-        {
-            Debug.WriteLine("Setting up starting map");
-            questManager.Start();
-            itemManager.Start(gameMap);
-            gameMap.Start(mainPlayer, enemyManager);
-            mainPlayer.Start();
-            gameMap.Draw();
-            itemManager.Draw();
-            mainPlayer.Draw();
-            enemyManager.Draw();
-        }
-
         public void PlayGame()
         {
             Debug.WriteLine("Starting Game");
@@ -137,7 +31,19 @@ namespace TextRPG_OOP_
             Console.WriteLine();
             Console.WriteLine();
             CheckForSaveState();
-        } 
+        }
+
+        private void StartUp()
+        {
+            Console.CursorVisible = false;
+            settings = new Settings();
+            itemManager = new ItemManager();
+            shop = new ShopManager();
+            questManager = new QuestManager();
+            gameMap = new Map(itemManager, questManager);
+            enemyManager = new EnemyManager(gameMap, settings, shop);
+            mainPlayer = new Player(gameMap,itemManager, shop, questManager);
+        }
 
         private void Intro()
         {
@@ -166,27 +72,85 @@ namespace TextRPG_OOP_
             Console.Clear();
         }
 
-
-        private void CheckPlayerCondition()
+        public void CheckForSaveState()
         {
-            if(mainPlayer.healthSystem.IsAlive == false)
-            {
-                mainPlayer.gameIsOver = true;
-            }
-            CheckPauseState(ShopManager.Paused);
-        }
+            ConsoleKeyInfo playerInput = Console.ReadKey(true);
 
-        public static void CheckPauseState(bool isPaused)
-        {
-            while (isPaused)
+            if (playerInput.Key == ConsoleKey.L)
             {
-                // do nothing
-
-                if (!isPaused)
+                try
                 {
-                    continue;
+                    Settings.LoadSettings();
+                    Settings.LoadStaticSettings();
+                    Player.LoadPlayer();
+                    ShopManager.LoadShop();
+                    hasSaveFile = true;
+                    Debug.WriteLine(hasSaveFile);
+                    SetUpGame();
+                    DungeonGameLoop();
+                }
+                catch (System.IO.FileNotFoundException ex)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Save file not found: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame();
+                }
+                catch (System.Text.Json.JsonException ex)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Error loading game data: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame();
+                }
+                catch (Exception ex)
+                {
+                    Console.Clear();
+                    Console.WriteLine("An unexpected error occurred: " + ex.Message);
+                    hasSaveFile = false;
+                    StartNewGame();
                 }
             }
+            else if (playerInput.Key == ConsoleKey.N)
+            {
+                SetUpGame();
+                //Settings.SaveStaticSettings(settings);
+                //settings.SaveSettings();
+                //mainPlayer.SavePlayer();
+                //shop.SaveShop();
+                hasSaveFile = false;
+                DungeonGameLoop();
+            }
+            else if (playerInput.Key != ConsoleKey.L && playerInput.Key != ConsoleKey.N)
+            {
+                StartNewGame();
+            }
+        }
+
+        private void SetUpGame()
+        {
+            shop.Start();
+            questManager.Start();
+            itemManager.Start(gameMap);
+            gameMap.Start(mainPlayer, enemyManager);
+            mainPlayer.Start();
+            gameMap.Draw();
+            itemManager.Draw();
+            mainPlayer.Draw();
+            enemyManager.Draw();
+        }
+
+        private void StartNewGame()
+        {
+            Console.WriteLine("No save file found on record, beginning new game");
+            Thread.Sleep(2000);
+            SetUpGame();
+            Settings.SaveStaticSettings(settings);
+            settings.SaveSettings();
+            mainPlayer.SavePlayer();
+            shop.SaveShop();
+            hasSaveFile = true;
+            DungeonGameLoop();
         }
 
         private void DungeonGameLoop()
@@ -208,6 +172,28 @@ namespace TextRPG_OOP_
                 shop.SaveShop();
             }
             EndGame();
+        }
+
+        private void CheckPlayerCondition()
+        {
+            if(mainPlayer.healthSystem.IsAlive == false)
+            {
+                mainPlayer.gameIsOver = true;
+            }
+            CheckPauseState(ShopManager.Paused);
+        }
+
+        public static void CheckPauseState(bool isPaused)
+        {
+            while (isPaused)
+            {
+                // do nothing
+
+                if (!isPaused)
+                {
+                    continue;
+                }
+            }
         }
 
         private void EndGame()

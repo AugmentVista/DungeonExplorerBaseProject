@@ -22,36 +22,33 @@ namespace TextRPG_OOP_
         public int GoblinFolkBaseHP { get; set; } = 3;
         public int GoblinFolkBaseDamage { get; set; } = 0;
 
-        /// <summary>
-        /// Player stats are static as there is only ever one player
-        /// </summary>
-
         // Configuration properties
         public int playerMaxHPConfig { get; set; } = 20;
         public int playerMaxArmourConfig { get; set; } = 5;
         public int playerMaxDmgConfig { get; set; } = 10;
+        public int playerStartingHealthConfig { get; set; } = 10;
 
         // Static properties
         public static int playerMaxHP { get; set; } = 20;
         public static int playerMaxArmour { get; set; } = 5;
         public static int playerMaxDamage { get; set; } = 10;
+        public static int startingHealth { get; set; } = 9;
 
         public class StaticSettingsDTO
         {
             public int PlayerMaxHP { get; set; }
             public int PlayerMaxArmour { get; set; }
             public int PlayerMaxDamage { get; set; }
+            public int PlayerStartingHealth { get; set; }
         }
 
         public void SaveSettings()
         {
-            SaveStaticSettings(this); // Pass the current instance
+            SaveStaticSettings(this);
             string filePath = "settingsdata.json";
             var options = new JsonSerializerOptions { WriteIndented = true };
             var json = JsonSerializer.Serialize(this, options);
             File.WriteAllText(filePath, json);
-
-            // Save static settings as well
         }
 
         public static void SaveStaticSettings(Settings settingsInstance)
@@ -60,7 +57,9 @@ namespace TextRPG_OOP_
             {
                 PlayerMaxHP = settingsInstance.playerMaxHPConfig, // Access instance property
                 PlayerMaxArmour = settingsInstance.playerMaxArmourConfig, // Access instance property
-                PlayerMaxDamage = settingsInstance.playerMaxDmgConfig // Access instance property
+                PlayerMaxDamage = settingsInstance.playerMaxDmgConfig, // Access instance property
+                PlayerStartingHealth = settingsInstance.playerStartingHealthConfig
+
             };
 
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -78,6 +77,7 @@ namespace TextRPG_OOP_
                 var staticSettings = JsonSerializer.Deserialize<StaticSettingsDTO>(json);
 
                 playerMaxHP = staticSettings.PlayerMaxHP;
+                startingHealth = staticSettings.PlayerStartingHealth;
                 playerMaxArmour = staticSettings.PlayerMaxArmour;
                 playerMaxDamage = staticSettings.PlayerMaxDamage;
             }
@@ -90,7 +90,7 @@ namespace TextRPG_OOP_
             var json = File.ReadAllText(filePath);
             var settings = JsonSerializer.Deserialize<Settings>(json);
 
-            return settings; // Return the deserialized settings object
+            return settings;
         }
     }
 }

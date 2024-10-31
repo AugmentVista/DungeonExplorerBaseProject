@@ -23,7 +23,8 @@ namespace TextRPG_OOP_
         public int playerArmourUps { get; set; } = 1;
         public int playerHealthUps { get; set; }
         public int playerDamageUps { get; set; } = 1;
-        public int startingHealth { get; set; } = 20;
+
+        private int startingHealth = 15;
         public int enemyHitHealth;
         public int enemyHitArmor;
 
@@ -58,8 +59,16 @@ namespace TextRPG_OOP_
         public void Start()
         {
             SetMaxPlayerPosition(gameMap);
+            if (GameManager.hasSaveFile) 
+            { 
+                LoadPlayer();
+                healthSystem.health = Settings.startingHealth;
+                playerHealth = healthSystem.GetHealth();
+            }
+            else
+            { 
             DefaultPlayerStats();
-            if (GameManager.hasSaveFile) { LoadPlayer(); }
+            }
         }
 
         public void DefaultPlayerStats()
