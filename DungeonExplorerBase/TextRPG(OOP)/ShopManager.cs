@@ -38,7 +38,6 @@ namespace TextRPG_OOP_
             }
             else if (!GameManager.hasSaveFile) 
             {
-                playerCoins = playerCoins * 2;
                     
             }
         }

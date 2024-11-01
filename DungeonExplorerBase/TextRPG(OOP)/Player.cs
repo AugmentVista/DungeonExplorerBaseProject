@@ -24,7 +24,7 @@ namespace TextRPG_OOP_
         public int playerHealthUps { get; set; }
         public int playerDamageUps { get; set; } = 1;
 
-        private int startingHealth = 15;
+        private int startingHealth = 20;
         public int enemyHitHealth;
         public int enemyHitArmor;
 
@@ -64,6 +64,10 @@ namespace TextRPG_OOP_
                 LoadPlayer();
                 healthSystem.health = Settings.startingHealth;
                 playerHealth = healthSystem.GetHealth();
+                playerArmour = Settings.playerMaxArmour;
+                playerDamage = Settings.playerMaxDamage;
+                playerArmourUps = Settings.playerMaxArmour;
+                playerDamageUps = Settings.playerMaxDamage;
             }
             else
             { 
